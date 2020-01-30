@@ -7,7 +7,10 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -31,31 +34,36 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
-        /* Generating random seed */
+        HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-        byte[] randomSeed = signingConfigManager.generateRandomSeed();
+        if("true".equalsIgnoreCase((String)req.getAttribute("sign"))) {
+            /* Generating random seed */
 
-        /* Calculating salt */
+            byte[] randomSeed = signingConfigManager.generateRandomSeed();
 
-        byte[] salt = signingConfigManager.calculateXor(randomSeed,signingConfigManager.getMyKey());
+            /* Calculating salt */
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-        try {
-            outputStream.write(body);
-            outputStream.write(salt);
-        } catch (IOException e) {
-            e.printStackTrace();
+            byte[] salt = signingConfigManager.calculateXor(randomSeed, signingConfigManager.getMyKey());
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            try {
+                outputStream.write(body);
+                outputStream.write(salt);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            /* Calculating fingerprint header */
+
+            byte[] hash = null;
+            messageDigest.reset();
+            messageDigest.update(outputStream.toByteArray());
+            hash = messageDigest.digest();
+
+            request.getHeaders().add("Seed", Base64.getEncoder().encodeToString(randomSeed));
+            request.getHeaders().add("Fingerprint", Base64.getEncoder().encodeToString(hash));
+
         }
-
-        /* Calculating fingerprint header */
-
-        byte[] hash = null;
-        messageDigest.reset();
-        messageDigest.update(outputStream.toByteArray());
-        hash = messageDigest.digest();
-
-        request.getHeaders().add("Seed", Base64.getEncoder().encodeToString(randomSeed));
-        request.getHeaders().add("Fingerprint", Base64.getEncoder().encodeToString(hash));
 
         return execution.execute(request,body);
     }

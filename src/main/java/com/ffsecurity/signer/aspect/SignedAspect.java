@@ -1,14 +1,13 @@
-package com.ffsecurity.signer.interceptors;
+package com.ffsecurity.signer.aspect;
 
 import com.ffsecurity.signer.config.SigningConfigManager;
+import com.ffsecurity.signer.exception.FingerprintVerificationException;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -19,33 +18,40 @@ import java.util.stream.Collectors;
 
 
 @Component
-public class ServerInterceptor implements HandlerInterceptor {
+@Aspect
+public class SignedAspect {
 
     MessageDigest messageDigest;
 
     @Autowired
     SigningConfigManager signingConfigManager;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @PostConstruct
     void initMessageDigest() throws NoSuchAlgorithmException {
         messageDigest = MessageDigest.getInstance(signingConfigManager.getAlgorithm());
     }
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    @Before("@annotation(com.ffsecurity.signer.annotations.Signed)")
+    public void preHandle() throws FingerprintVerificationException {
 
         String fingerPrintHeader = request.getHeader("Fingerprint");
         String seedHeader = request.getHeader("Seed");
 
         if(fingerPrintHeader == null || seedHeader == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("You're trying to call authenticated service, please tell me who you are!");
-            return false;
+            throw new FingerprintVerificationException();
         }
 
         byte[] fingerPrint = Base64.getDecoder().decode(fingerPrintHeader);
         byte[] seed = Base64.getDecoder().decode(seedHeader);
-        byte[] body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator())).getBytes();
+        byte[] body = new byte[0];
+        try {
+            body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator())).getBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         /* Calculating salt */
 
@@ -71,21 +77,9 @@ public class ServerInterceptor implements HandlerInterceptor {
         boolean flag = Arrays.equals(hash,fingerPrint);
 
         if(!flag) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("You're trying to call authenticated service, please tell me who you are!");
+            throw new FingerprintVerificationException();
         }
 
-        return flag;
-
     }
 
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
-    }
 }
