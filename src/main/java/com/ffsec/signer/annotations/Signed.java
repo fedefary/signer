@@ -1,4 +1,4 @@
-package com.ffsecurity.signer.annotations;
+package com.ffsec.signer.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Sign {
+public @interface Signed {
 }

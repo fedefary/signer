@@ -1,4 +1,4 @@
-package com.ffsecurity.signer.config;
+package com.ffsec.signer.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -7,7 +7,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 
 @Component
-public class SigningConfigManager {
+public class SignatureConfigManager {
 
     /* Supported hash algorithms */
     public static final String MD5 = "MD5";
@@ -18,10 +18,10 @@ public class SigningConfigManager {
     private String algorithm;
     private int size;
 
-    @Value("${ffsecurity.signer.secret}")
+    @Value("${ffsec.signer.secret}")
     String secret;
 
-    @Value("${ffsecurity.signer.algorithm:#{null}}")
+    @Value("${ffsec.signer.algorithm:#{null}}")
     String alg;
 
     @PostConstruct
@@ -29,7 +29,7 @@ public class SigningConfigManager {
 
         /* Init secret key */
         if(secret == null)
-            throw new Exception("You have to define the symmetric key into the property 'ffsecurity.signer.secret'");
+            throw new Exception("You have to define the symmetric key into the property 'ffsec.signer.secret'");
         myKey = secret.getBytes();
 
         /* Init MessageDigest */

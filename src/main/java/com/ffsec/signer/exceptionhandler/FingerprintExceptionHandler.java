@@ -1,6 +1,6 @@
-package com.ffsecurity.signer.exceptionhandler;
+package com.ffsec.signer.exceptionhandler;
 
-import com.ffsecurity.signer.exception.FingerprintVerificationException;
+import com.ffsec.signer.exception.FingerprintVerificationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

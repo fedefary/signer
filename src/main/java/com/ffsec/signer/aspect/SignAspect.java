@@ -1,4 +1,4 @@
-package com.ffsecurity.signer.aspect;
+package com.ffsec.signer.aspect;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 public class SignAspect {
 
-    @Before("@annotation(com.ffsecurity.signer.annotations.Sign)")
+    @Before("@annotation(com.ffsec.signer.annotations.Sign)")
     public void makeHeader() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         request.setAttribute("sign","true");

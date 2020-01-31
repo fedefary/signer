@@ -1,4 +1,4 @@
-package com.ffsecurity.signer;
+package com.ffsec.signer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,6 +1,6 @@
-package com.ffsecurity.signer.interceptors;
+package com.ffsec.signer.interceptors;
 
-import com.ffsecurity.signer.config.SigningConfigManager;
+import com.ffsec.signer.config.SignatureConfigManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -23,11 +23,11 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
     MessageDigest messageDigest;
 
     @Autowired
-    SigningConfigManager signingConfigManager;
+    SignatureConfigManager signatureConfigManager;
 
     @PostConstruct
     void initMessageDigest() throws NoSuchAlgorithmException {
-        messageDigest = MessageDigest.getInstance(signingConfigManager.getAlgorithm());
+        messageDigest = MessageDigest.getInstance(signatureConfigManager.getAlgorithm());
     }
 
     @Override
@@ -38,11 +38,11 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
         if("true".equalsIgnoreCase((String)req.getAttribute("sign"))) {
             /* Generating random seed */
 
-            byte[] randomSeed = signingConfigManager.generateRandomSeed();
+            byte[] randomSeed = signatureConfigManager.generateRandomSeed();
 
             /* Calculating salt */
 
-            byte[] unhashedSign = signingConfigManager.calculateXor(randomSeed, signingConfigManager.getMyKey());
+            byte[] unhashedSign = signatureConfigManager.calculateXor(randomSeed, signatureConfigManager.getMyKey());
 
             /* Calculating fingerprint header */
 

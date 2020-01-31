@@ -1,4 +1,4 @@
-package com.ffsecurity.signer;
+package com.ffsec.signer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

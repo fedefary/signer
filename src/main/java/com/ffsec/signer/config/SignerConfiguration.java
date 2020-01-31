@@ -1,6 +1,6 @@
-package com.ffsecurity.signer.config;
+package com.ffsec.signer.config;
 
-import com.ffsecurity.signer.interceptors.ClientInterceptor;
+import com.ffsec.signer.interceptors.ClientInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ComponentScan(basePackages = "com.ffsecurity")
+@ComponentScan(basePackages = "com.ffsec")
 @AutoConfigureAfter(value=RestTemplateAutoConfiguration.class)
 @ConditionalOnClass(value=RestTemplateAutoConfiguration.class)
 public class SignerConfiguration implements WebMvcConfigurer {

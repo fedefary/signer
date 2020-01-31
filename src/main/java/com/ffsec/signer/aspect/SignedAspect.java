@@ -1,7 +1,7 @@
-package com.ffsecurity.signer.aspect;
+package com.ffsec.signer.aspect;
 
-import com.ffsecurity.signer.config.SigningConfigManager;
-import com.ffsecurity.signer.exception.FingerprintVerificationException;
+import com.ffsec.signer.config.SignatureConfigManager;
+import com.ffsec.signer.exception.FingerprintVerificationException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +21,17 @@ public class SignedAspect {
     MessageDigest messageDigest;
 
     @Autowired
-    SigningConfigManager signingConfigManager;
+    SignatureConfigManager signatureConfigManager;
 
     @Autowired
     private HttpServletRequest request;
 
     @PostConstruct
     void initMessageDigest() throws NoSuchAlgorithmException {
-        messageDigest = MessageDigest.getInstance(signingConfigManager.getAlgorithm());
+        messageDigest = MessageDigest.getInstance(signatureConfigManager.getAlgorithm());
     }
 
-    @Before("@annotation(com.ffsecurity.signer.annotations.Signed)")
+    @Before("@annotation(com.ffsec.signer.annotations.Signed)")
     public void preHandle() throws FingerprintVerificationException {
 
         String fingerPrintHeader = request.getHeader("Fingerprint");
@@ -41,12 +41,19 @@ public class SignedAspect {
             throw new FingerprintVerificationException();
         }
 
-        byte[] fingerPrint = Base64.getDecoder().decode(fingerPrintHeader);
-        byte[] seed = Base64.getDecoder().decode(seedHeader);
+        byte[] fingerPrint;
+        byte[] seed;
+
+        try {
+            fingerPrint = Base64.getDecoder().decode(fingerPrintHeader);
+            seed = Base64.getDecoder().decode(seedHeader);
+        } catch (IllegalArgumentException ex) {
+            throw new FingerprintVerificationException();
+        }
 
         /* Calculating salt */
 
-        byte[] unhashedSign = signingConfigManager.calculateXor(seed,signingConfigManager.getMyKey());
+        byte[] unhashedSign = signatureConfigManager.calculateXor(seed, signatureConfigManager.getMyKey());
 
         /* Calculating fingerprint header */
 
