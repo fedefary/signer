@@ -8,13 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -46,30 +43,16 @@ public class SignedAspect {
 
         byte[] fingerPrint = Base64.getDecoder().decode(fingerPrintHeader);
         byte[] seed = Base64.getDecoder().decode(seedHeader);
-        byte[] body = new byte[0];
-        try {
-            body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator())).getBytes();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         /* Calculating salt */
 
-        byte[] salt = signingConfigManager.calculateXor(seed,signingConfigManager.getMyKey());
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-        try {
-            outputStream.write(body);
-            outputStream.write(salt);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        byte[] unhashedSign = signingConfigManager.calculateXor(seed,signingConfigManager.getMyKey());
 
         /* Calculating fingerprint header */
 
         byte[] hash = null;
         messageDigest.reset();
-        messageDigest.update(outputStream.toByteArray());
+        messageDigest.update(unhashedSign);
         hash = messageDigest.digest();
 
         /* Fingerprint verification */

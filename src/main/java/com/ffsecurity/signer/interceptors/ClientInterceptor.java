@@ -11,7 +11,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -43,21 +42,13 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
             /* Calculating salt */
 
-            byte[] salt = signingConfigManager.calculateXor(randomSeed, signingConfigManager.getMyKey());
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            try {
-                outputStream.write(body);
-                outputStream.write(salt);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            byte[] unhashedSign = signingConfigManager.calculateXor(randomSeed, signingConfigManager.getMyKey());
 
             /* Calculating fingerprint header */
 
             byte[] hash = null;
             messageDigest.reset();
-            messageDigest.update(outputStream.toByteArray());
+            messageDigest.update(unhashedSign);
             hash = messageDigest.digest();
 
             request.getHeaders().add("Seed", Base64.getEncoder().encodeToString(randomSeed));
