@@ -9,7 +9,7 @@ This annotation must be placed on the client method inside wich the http call is
 The library will add the necessary headers to the request that contain the signature, everything happens transparently for the user.
 
 **@Signed**
-This annotation must be placed on the called rest endpoint and tells to the library that this method is signed and the http request must be validated.
+This annotation must be placed on the called rest endpoint and notify the library that this method is signed and the http request must be validated.
 If the verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
 
 Both the client and the server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
