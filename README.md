@@ -12,7 +12,7 @@ The library will add the necessary headers to the request that contain the signa
 This annotation must be placed on the called rest endpoint and notify the library that this method is signed and the http request must be validated.
 If the verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
 
-Both the client and the server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
+Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
 On client side the secret key is used to generate the signature, on server side the same key is used for the singnature verification process.
 
 The property to set is *ffsec.signer.secret* and must contains a randomic generated string with any length (recommended 128/256/512 bit).
