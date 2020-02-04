@@ -18,7 +18,7 @@ public class SignatureConfigManager {
     private String algorithm;
     private int size;
 
-    @Value("${ffsec.signer.secret}")
+    @Value("${ffsec.signer.secret:#{null}}")
     String secret;
 
     @Value("${ffsec.signer.algorithm:#{null}}")

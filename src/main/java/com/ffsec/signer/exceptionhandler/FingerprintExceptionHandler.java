@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class FingerprintExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private static final String FINGERPRINT_VERIFICATION_FAILED = "";
+    private static final String FINGERPRINT_VERIFICATION_FAILED = "Invalid signature for this request";
 
     @ExceptionHandler(FingerprintVerificationException.class)
     public final ResponseEntity<String> handleAllExceptions(Exception ex, WebRequest request) {
