@@ -21,27 +21,29 @@ Is also possible for the user to define the hashing algorithm used for the signa
 
 The property for the hashing algorithm is *ffsec.signer.algorithm* and the possible values are MD5, SHA-1 and SHA-256.
 
-The library use a randomic seed for the signature generation, this seed is combined with the secret key and finally hashed, 
+The library uses a randomic seed for the signature generation, this seed is combined with the secret key and finally hashed, 
 this process guarantee high security.
+
 
 **Building and installation**
 
-Clone the project, build and install it with the following command:
+Clone the project, build and install it with the following maven command:
 
 *mvn clean install -DskipTests*
+
 
 **Configuration**
 
 Import the library into your maven project with the following dependecy on your pom:
 
 <dependency>
-  <groupId>com.ffsec</groupId>
-  <artifactId>signer</artifactId>
-  <version>1.0</version>
+   <groupId>com.ffsec</groupId>
+   <artifactId>signer</artifactId>
+   <version>1.0</version>
 </dependency>
 
-The library provide you an already instantiated RestTemplate bean that you can inject into your Controller or where is needed (see the example below).
-*!!! The http calls must be executed with this instance otherwise the library does not work !!!*
+The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the example below).
+*!! All the http calls must be executed with this instance otherwise the library does not work !!*
 
 This is an example for the client side usage.
 
