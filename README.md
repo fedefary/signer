@@ -26,6 +26,7 @@ The property for the hashing algorithm is *ffsec.signer.algorithm* and the possi
 
 The library uses a randomic seed for the signature generation, this seed is combined with the secret key and finally hashed, 
 this process guarantee high security.
+The library also guarantee that the fingerprint is valid only for one request, this feature makes useless any attempt to sniff the signature from the request.
 
 
 **Building and installation**
