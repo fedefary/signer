@@ -49,7 +49,7 @@ The library provides you an already instantiated RestTemplate bean that you can 
 
 *All the http calls must be executed with this instance otherwise the library does not work*
 
-This is an example for the client side usage.
+This is an example for the client side usage:
 
 ```
 @RestController
@@ -68,7 +68,7 @@ public class ClientController {
 }
 ```
 
-This is an example for the server usage:
+This is an example for the server side usage:
 
 ```
 @RestController
