@@ -22,6 +22,8 @@ Is also possible for the user to define the hashing algorithm used for the signa
 
 The property for the hashing algorithm is *ffsec.signer.algorithm* and the possible values are MD5, SHA-1 and SHA-256.
 
+*Is important to define the same algorithm on both client and server SpringBoot services to avoid problems*
+
 The library uses a randomic seed for the signature generation, this seed is combined with the secret key and finally hashed, 
 this process guarantee high security.
 
