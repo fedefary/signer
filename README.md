@@ -45,7 +45,8 @@ Import the library into your maven project with the following dependecy on your 
 ```
 
 The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the example below).
-*!! All the http calls must be executed with this instance otherwise the library does not work !!*
+
+*All the http calls must be executed with this instance otherwise the library does not work*
 
 This is an example for the client side usage.
 
