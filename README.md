@@ -36,17 +36,20 @@ Clone the project, build and install it with the following maven command:
 
 Import the library into your maven project with the following dependecy on your pom:
 
+```
 <dependency>
    <groupId>com.ffsec</groupId>
    <artifactId>signer</artifactId>
    <version>1.0</version>
 </dependency>
+```
 
 The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the example below).
 *!! All the http calls must be executed with this instance otherwise the library does not work !!*
 
 This is an example for the client side usage.
 
+```
 @RestController
 public class ClientController {
 
@@ -60,11 +63,12 @@ public class ClientController {
         return restTemplate.postForEntity("http://localhost:8080/server", "the brown fox jumps over the lazy dog" , String.class);
 
     }
-
 }
+```
 
 This is an example for the server usage:
 
+```
 @RestController
 public class TestController {
 
@@ -75,10 +79,12 @@ public class TestController {
     }
     
 }
+```
 
 Is also required the import of the library configuration class on your SpringBoot application.
 This is an example:
 
+```
 @SpringBootApplication
 @Import(SignerConfiguration.class)
 public class DemoApplication {
@@ -88,3 +94,4 @@ public class DemoApplication {
     }
 
 }
+```
