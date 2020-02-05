@@ -21,7 +21,7 @@ On client side the secret key is used to generate the signature, on server side 
 
 The property to set is *ffsec.signer.secret* and must contains a randomic generated string with any length (recommended 128/256/512 bit).
 
-Is also possible for the user to define the hashing algorithm used for the signature generation, the default is HmacSHA256 but also these algorithms are supported:
+It's also possible for the user to define the hashing algorithm used for the signature generation, the default is HmacSHA256 but also these algorithms are supported:
 
 - HmacMD5
 - HmacSHA1
@@ -29,7 +29,7 @@ Is also possible for the user to define the hashing algorithm used for the signa
 - HmacSHA384
 - HmacSHA512
 
-The property for the hashing algorithm is *ffsec.signer.algorithm* and the possible values listed above.
+The property for the hashing algorithm is *ffsec.signer.algorithm* and the possible values are listed above.
 
 *Is important to define the same algorithm on both client and server to avoid problems*
 
