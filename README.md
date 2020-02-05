@@ -1,7 +1,8 @@
 # signer
 SpringBoot library for automatic and secure http request signing.
 
-This library provide you a way for signing your RestTemplate HTTP request accross microservices and guarantee the identity of the client.
+This library provide you a way for signing your RestTemplate HTTP request accross microservices ensuring the identity of the client and the integrity of the HTTP payload.
+
 The library offers two annotations, @Sign and @Signed for client and server respectively.
 
 **@Sign**
@@ -12,6 +13,8 @@ The library will add the necessary headers to the request that contain the signa
 This annotation must be placed on the called rest endpoint and notify the library that this method is signed and the http request must be validated.
 If the verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
 Every rest API annotated with @Signed annotation will be secured and will require a signed client. 
+
+*Obviously the two annotations will be trigger the verification process only for the HTTP that contain a body to sign*
 
 Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
 On client side the secret key is used to generate the signature, on server side the same key is used for the singnature verification process.
@@ -24,9 +27,7 @@ The property for the hashing algorithm is *ffsec.signer.algorithm* and the possi
 
 *Is important to define the same algorithm on both client and server to avoid problems*
 
-The library uses a randomic seed for the signature generation, this seed is combined with the secret key and finally hashed, 
-this process guarantee high security.
-The library also guarantee that the signature have a single request validity, this feature makes useless any sniffing attempt.
+The library uses a randomic seed combined to the secret key to get stronger security, this process ensures that the generated signature is valid only for the concerned body.
 
 
 **Building and installation**
