@@ -29,6 +29,7 @@ The property for the hashing algorithm is *ffsec.signer.algorithm* and the possi
 
 The library uses the Java Mac class to make the symmetric signature.
 See the official Oracle documentation linked below for more details.
+
 https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
 
 
