@@ -29,7 +29,7 @@ Is also possible for the user to define the hashing algorithm used for the signa
 - HmacSHA384
 - HmacSHA512
 
-The property for the hashing algorithm is *ffsec.signer.algorithm* and the possible values are MD5, SHA-1 and SHA-256.
+The property for the hashing algorithm is *ffsec.signer.algorithm* and the possible values listed above.
 
 *Is important to define the same algorithm on both client and server to avoid problems*
 
