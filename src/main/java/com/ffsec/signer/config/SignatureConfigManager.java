@@ -1,11 +1,15 @@
 package com.ffsec.signer.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
 public class SignatureConfigManager {
+
+    Logger logger = LoggerFactory.getLogger(SignatureConfigManager.class);
 
     public static final String MD5 = "HmacMD5";
     public static final String SHA_1 = "HmacSHA1";
@@ -24,18 +28,26 @@ public class SignatureConfigManager {
     @PostConstruct
     void init() throws Exception {
 
-        /* Init secret key */
-        if(secret == null)
+        boolean isDebugEnabled = logger.isDebugEnabled();
+
+        if(secret == null) {
             throw new Exception("You have to define the symmetric key into the property 'ffsec.signer.secret'");
+        }
         myKey = secret.getBytes();
 
-        /* Init MessageDigest */
+        if(isDebugEnabled) {
+            logger.debug("Secret key correctly initialized");
+        }
 
-        if(MD5.equalsIgnoreCase(alg) || SHA_1.equalsIgnoreCase(alg) || SHA_256.equalsIgnoreCase(alg))
+        if(MD5.equalsIgnoreCase(alg) || SHA_1.equalsIgnoreCase(alg) || SHA_256.equalsIgnoreCase(alg)) {
             this.algorithm = alg;
-        else this.algorithm = SHA_256;
+        } else {
+            this.algorithm = SHA_256;
+        }
 
-        /* Init seed size */
+        if(isDebugEnabled) {
+            logger.debug("Algorithm selected is {}", this.algorithm);
+        }
 
         this.size = MD5.equalsIgnoreCase(algorithm) ? 16 : (SHA_1.equalsIgnoreCase(algorithm) ? 20 : (SHA_256.equalsIgnoreCase(algorithm) ? 32 : 0));
 

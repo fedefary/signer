@@ -19,7 +19,9 @@ public class FingerprintExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(FingerprintVerificationException.class)
     public final ResponseEntity<String> handleAllExceptions(Exception ex, WebRequest request) {
-        logger.warn(ex.getMessage());
+        if(logger.isWarnEnabled()) {
+            logger.warn(ex.getMessage());
+        }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FINGERPRINT_VERIFICATION_ERROR);
     }
 

@@ -4,6 +4,8 @@ import com.ffsec.signer.config.SignatureConfigManager;
 import com.ffsec.signer.exception.FingerprintVerificationException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 @Aspect
 public class SignedAspect {
 
+    Logger logger = LoggerFactory.getLogger(SignedAspect.class);
+
     Mac mac;
 
     @Autowired
@@ -40,6 +44,8 @@ public class SignedAspect {
     @Before("@annotation(com.ffsec.signer.annotations.Signed)")
     public void preHandle() throws FingerprintVerificationException, IOException {
 
+        boolean isDebugEnabled = logger.isDebugEnabled();
+
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String body = request.getReader().lines().collect(Collectors.joining());
 
@@ -48,6 +54,9 @@ public class SignedAspect {
             String signatureHeader = this.request.getHeader("Signature");
 
             if (signatureHeader == null) {
+                if(isDebugEnabled) {
+                    logger.debug("The received signature is is null");
+                }
                 throw new FingerprintVerificationException("Signature header missing");
             }
 
@@ -57,6 +66,11 @@ public class SignedAspect {
                 receivedSignature = Base64.getDecoder().decode(signatureHeader);
             } catch (IllegalArgumentException ex) {
                 throw new FingerprintVerificationException(ex.getMessage());
+            }
+
+            if(isDebugEnabled) {
+                logger.debug("The received signature is {}", receivedSignature);
+                logger.debug("Verification process started");
             }
 
             byte[] byteKey = signatureConfigManager.getMyKey();
@@ -70,8 +84,14 @@ public class SignedAspect {
 
             boolean flag = Arrays.equals(receivedSignature, calculatedSignature);
 
+
             if (!flag) {
+                if(isDebugEnabled) {
+                    logger.debug("Verification process finished, the signature is not valid");
+                }
                 throw new FingerprintVerificationException();
+            } else if(isDebugEnabled) {
+                logger.debug("Verification process finished, the signature is valid");
             }
 
         }
