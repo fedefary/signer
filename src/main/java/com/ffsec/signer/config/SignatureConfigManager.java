@@ -3,16 +3,13 @@ package com.ffsec.signer.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
-import java.security.SecureRandom;
-import java.util.Arrays;
 
 @Component
 public class SignatureConfigManager {
 
-    /* Supported hash algorithms */
-    public static final String MD5 = "MD5";
-    public static final String SHA_1 = "SHA-1";
-    public static final String SHA_256 = "SHA-256";
+    public static final String MD5 = "HmacMD5";
+    public static final String SHA_1 = "HmacSHA1";
+    public static final String SHA_256 = "HmacSHA256";
 
     private byte[] myKey;
     private String algorithm;
@@ -42,23 +39,6 @@ public class SignatureConfigManager {
 
         this.size = MD5.equalsIgnoreCase(algorithm) ? 16 : (SHA_1.equalsIgnoreCase(algorithm) ? 20 : (SHA_256.equalsIgnoreCase(algorithm) ? 32 : 0));
 
-    }
-
-    public byte[] generateRandomSeed() {
-        SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[this.size];
-        random.nextBytes(bytes);
-        return bytes;
-    }
-
-    public byte[] calculateXor(byte[] seed, byte[] key) {
-        byte[] xor = new byte[this.size];
-        byte[] paddedKey = Arrays.copyOf(key,this.size);
-        int i = 0;
-        for (byte b : seed) {
-            xor[i] = (byte) (b ^ paddedKey[i++]);
-        }
-        return xor;
     }
 
     public String getAlgorithm() {

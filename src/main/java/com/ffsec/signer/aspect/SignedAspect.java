@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import javax.annotation.PostConstruct;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Aspect
 public class SignedAspect {
 
-    MessageDigest messageDigest;
+    Mac mac;
 
     @Autowired
     SignatureConfigManager signatureConfigManager;
@@ -33,8 +33,8 @@ public class SignedAspect {
     private HttpServletRequest request;
 
     @PostConstruct
-    void initMessageDigest() throws NoSuchAlgorithmException {
-        messageDigest = MessageDigest.getInstance(signatureConfigManager.getAlgorithm());
+    void initMac() throws NoSuchAlgorithmException {
+        mac = Mac.getInstance(signatureConfigManager.getAlgorithm());
     }
 
     @Before("@annotation(com.ffsec.signer.annotations.Signed)")
@@ -46,41 +46,29 @@ public class SignedAspect {
         if(body != null) {
 
             String signatureHeader = this.request.getHeader("Signature");
-            String seedHeader = this.request.getHeader("Seed");
 
-            if (signatureHeader == null || seedHeader == null) {
+            if (signatureHeader == null) {
                 throw new FingerprintVerificationException();
             }
 
-            byte[] signature;
-            byte[] seed;
+            byte[] receivedSignature;
 
             try {
-                signature = Base64.getDecoder().decode(signatureHeader);
-                seed = Base64.getDecoder().decode(seedHeader);
+                receivedSignature = Base64.getDecoder().decode(signatureHeader);
             } catch (IllegalArgumentException ex) {
                 throw new FingerprintVerificationException();
             }
 
-            /* Calculating xored key */
+            byte[] byteKey = signatureConfigManager.getMyKey();
+            SecretKeySpec keySpec = new SecretKeySpec(byteKey, signatureConfigManager.getAlgorithm());
+            try {
+                mac.init(keySpec);
+            } catch (InvalidKeyException e) {
+                throw new FingerprintVerificationException();
+            }
+            byte[] calculatedSignature = mac.doFinal(body.getBytes());
 
-            byte[] xoredKey = signatureConfigManager.calculateXor(seed, signatureConfigManager.getMyKey());
-
-            /* Concatenating xor result with body byte array */
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-            outputStream.write(xoredKey);
-            outputStream.write(body.getBytes());
-
-            /* Calculating signature */
-
-            messageDigest.reset();
-            messageDigest.update(outputStream.toByteArray());
-            byte[] hash = messageDigest.digest();
-
-            /* Signature verification */
-
-            boolean flag = Arrays.equals(hash, signature);
+            boolean flag = Arrays.equals(receivedSignature, calculatedSignature);
 
             if (!flag) {
                 throw new FingerprintVerificationException();

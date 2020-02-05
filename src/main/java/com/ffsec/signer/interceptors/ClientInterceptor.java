@@ -2,7 +2,6 @@ package com.ffsec.signer.interceptors;
 
 import com.ffsec.signer.config.SignatureConfigManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -11,10 +10,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.PostConstruct;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
@@ -22,14 +22,14 @@ import java.util.Base64;
 @Component
 public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
-    MessageDigest messageDigest;
+    Mac mac;
 
     @Autowired
     SignatureConfigManager signatureConfigManager;
 
     @PostConstruct
-    void initMessageDigest() throws NoSuchAlgorithmException {
-        messageDigest = MessageDigest.getInstance(signatureConfigManager.getAlgorithm());
+    void initMac() throws NoSuchAlgorithmException {
+        mac = Mac.getInstance(signatureConfigManager.getAlgorithm());
     }
 
     @Override
@@ -39,28 +39,16 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
         if("true".equalsIgnoreCase((String)req.getAttribute("sign")) && body != null && body.length > 0) {
 
-            /* Generating random seed */
+            byte[] byteKey = signatureConfigManager.getMyKey();
+            SecretKeySpec keySpec = new SecretKeySpec(byteKey, signatureConfigManager.getAlgorithm());
+            try {
+                mac.init(keySpec);
+            } catch (InvalidKeyException e) {
+                throw new IOException("Error during key initialization");
+            }
+            byte[] signature = mac.doFinal(body);
 
-            byte[] randomSeed = signatureConfigManager.generateRandomSeed();
-
-            /* Calculating xored key */
-
-            byte[] xoredKey = signatureConfigManager.calculateXor(randomSeed, signatureConfigManager.getMyKey());
-
-            /* Concatenating xor result with body byte array */
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-            outputStream.write(xoredKey);
-            outputStream.write(body);
-
-            /* Calculating signature */
-
-            messageDigest.reset();
-            messageDigest.update(outputStream.toByteArray());
-            byte[] hash = messageDigest.digest();
-
-            request.getHeaders().add("Seed", Base64.getEncoder().encodeToString(randomSeed));
-            request.getHeaders().add("Signature", Base64.getEncoder().encodeToString(hash));
+            request.getHeaders().add("Signature", Base64.getEncoder().encodeToString(signature));
 
         }
 
