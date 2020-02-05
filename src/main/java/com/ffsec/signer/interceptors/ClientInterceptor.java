@@ -2,6 +2,7 @@ package com.ffsec.signer.interceptors;
 
 import com.ffsec.signer.config.SignatureConfigManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -11,6 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -35,24 +37,31 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
         HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-        if("true".equalsIgnoreCase((String)req.getAttribute("sign"))) {
+        if("true".equalsIgnoreCase((String)req.getAttribute("sign")) && (request.getMethod().matches(HttpMethod.POST.name())
+                || request.getMethod().matches(HttpMethod.PUT.name()) || request.getMethod().matches(HttpMethod.PATCH.name()))) {
+
             /* Generating random seed */
 
             byte[] randomSeed = signatureConfigManager.generateRandomSeed();
 
-            /* Calculating salt */
+            /* Calculating xored key */
 
-            byte[] unhashedSign = signatureConfigManager.calculateXor(randomSeed, signatureConfigManager.getMyKey());
+            byte[] xoredKey = signatureConfigManager.calculateXor(randomSeed, signatureConfigManager.getMyKey());
 
-            /* Calculating fingerprint header */
+            /* Concatenating xor result with body byte array */
 
-            byte[] hash = null;
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+            outputStream.write(xoredKey);
+            outputStream.write(body);
+
+            /* Calculating signature */
+
             messageDigest.reset();
-            messageDigest.update(unhashedSign);
-            hash = messageDigest.digest();
+            messageDigest.update(outputStream.toByteArray());
+            byte[] hash = messageDigest.digest();
 
             request.getHeaders().add("Seed", Base64.getEncoder().encodeToString(randomSeed));
-            request.getHeaders().add("Fingerprint", Base64.getEncoder().encodeToString(hash));
+            request.getHeaders().add("Signature", Base64.getEncoder().encodeToString(hash));
 
         }
 

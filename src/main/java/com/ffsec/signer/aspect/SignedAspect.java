@@ -5,13 +5,20 @@ import com.ffsec.signer.exception.FingerprintVerificationException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -32,42 +39,56 @@ public class SignedAspect {
     }
 
     @Before("@annotation(com.ffsec.signer.annotations.Signed)")
-    public void preHandle() throws FingerprintVerificationException {
+    public void preHandle() throws FingerprintVerificationException, IOException {
 
-        String fingerPrintHeader = request.getHeader("Fingerprint");
-        String seedHeader = request.getHeader("Seed");
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String method = request.getMethod();
 
-        if(fingerPrintHeader == null || seedHeader == null) {
-            throw new FingerprintVerificationException();
-        }
+        if(HttpMethod.POST.matches(method) || HttpMethod.PUT.matches(method) || HttpMethod.PATCH.matches(method)) {
 
-        byte[] fingerPrint;
-        byte[] seed;
+            String signatureHeader = this.request.getHeader("Signature");
+            String seedHeader = this.request.getHeader("Seed");
 
-        try {
-            fingerPrint = Base64.getDecoder().decode(fingerPrintHeader);
-            seed = Base64.getDecoder().decode(seedHeader);
-        } catch (IllegalArgumentException ex) {
-            throw new FingerprintVerificationException();
-        }
+            if (signatureHeader == null || seedHeader == null) {
+                throw new FingerprintVerificationException();
+            }
 
-        /* Calculating salt */
+            byte[] signature;
+            byte[] seed;
 
-        byte[] unhashedSign = signatureConfigManager.calculateXor(seed, signatureConfigManager.getMyKey());
+            try {
+                signature = Base64.getDecoder().decode(signatureHeader);
+                seed = Base64.getDecoder().decode(seedHeader);
+            } catch (IllegalArgumentException ex) {
+                throw new FingerprintVerificationException();
+            }
 
-        /* Calculating fingerprint header */
+            /* Calculating xored key */
 
-        byte[] hash = null;
-        messageDigest.reset();
-        messageDigest.update(unhashedSign);
-        hash = messageDigest.digest();
+            byte[] xoredKey = signatureConfigManager.calculateXor(seed, signatureConfigManager.getMyKey());
 
-        /* Fingerprint verification */
+            /* Concatenating xor result with body byte array */
 
-        boolean flag = Arrays.equals(hash,fingerPrint);
+            String body = request.getReader().lines().collect(Collectors.joining());
 
-        if(!flag) {
-            throw new FingerprintVerificationException();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+            outputStream.write(xoredKey);
+            outputStream.write(body.getBytes());
+
+            /* Calculating fingerprint header */
+
+            messageDigest.reset();
+            messageDigest.update(outputStream.toByteArray());
+            byte[] hash = messageDigest.digest();
+
+            /* Fingerprint verification */
+
+            boolean flag = Arrays.equals(hash, signature);
+
+            if (!flag) {
+                throw new FingerprintVerificationException();
+            }
+
         }
 
     }
