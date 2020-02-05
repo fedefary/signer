@@ -72,13 +72,13 @@ public class SignedAspect {
             outputStream.write(xoredKey);
             outputStream.write(body.getBytes());
 
-            /* Calculating fingerprint header */
+            /* Calculating signature */
 
             messageDigest.reset();
             messageDigest.update(outputStream.toByteArray());
             byte[] hash = messageDigest.digest();
 
-            /* Fingerprint verification */
+            /* Signature verification */
 
             boolean flag = Arrays.equals(hash, signature);
 
