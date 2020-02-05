@@ -14,7 +14,7 @@ This annotation must be placed on the called rest endpoint and notify the librar
 If the verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
 Every rest API annotated with @Signed annotation will be secured and will require a signed client. 
 
-*Obviously the two annotations will be trigger the verification process only for the HTTP that contain a body to sign*
+*Obviously the two annotations will be trigger the verification process only for the HTTP that contain a body to sign.*
 
 Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
 On client side the secret key is used to generate the signature, on server side the same key is used for the singnature verification process.
