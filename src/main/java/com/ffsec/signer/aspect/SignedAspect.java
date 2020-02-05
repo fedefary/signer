@@ -48,7 +48,7 @@ public class SignedAspect {
             String signatureHeader = this.request.getHeader("Signature");
 
             if (signatureHeader == null) {
-                throw new FingerprintVerificationException();
+                throw new FingerprintVerificationException("Signature header missing");
             }
 
             byte[] receivedSignature;
@@ -56,7 +56,7 @@ public class SignedAspect {
             try {
                 receivedSignature = Base64.getDecoder().decode(signatureHeader);
             } catch (IllegalArgumentException ex) {
-                throw new FingerprintVerificationException();
+                throw new FingerprintVerificationException(ex.getMessage());
             }
 
             byte[] byteKey = signatureConfigManager.getMyKey();
@@ -64,7 +64,7 @@ public class SignedAspect {
             try {
                 mac.init(keySpec);
             } catch (InvalidKeyException e) {
-                throw new FingerprintVerificationException();
+                throw new FingerprintVerificationException(e.getMessage());
             }
             byte[] calculatedSignature = mac.doFinal(body.getBytes());
 
