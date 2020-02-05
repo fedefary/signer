@@ -37,8 +37,7 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
         HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-        if("true".equalsIgnoreCase((String)req.getAttribute("sign")) && (request.getMethod().matches(HttpMethod.POST.name())
-                || request.getMethod().matches(HttpMethod.PUT.name()) || request.getMethod().matches(HttpMethod.PATCH.name()))) {
+        if("true".equalsIgnoreCase((String)req.getAttribute("sign")) && body != null && body.length > 0) {
 
             /* Generating random seed */
 

@@ -5,7 +5,6 @@ import com.ffsec.signer.exception.FingerprintVerificationException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -42,9 +41,9 @@ public class SignedAspect {
     public void preHandle() throws FingerprintVerificationException, IOException {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String method = request.getMethod();
+        String body = request.getReader().lines().collect(Collectors.joining());
 
-        if(HttpMethod.POST.matches(method) || HttpMethod.PUT.matches(method) || HttpMethod.PATCH.matches(method)) {
+        if(body != null) {
 
             String signatureHeader = this.request.getHeader("Signature");
             String seedHeader = this.request.getHeader("Seed");
@@ -68,8 +67,6 @@ public class SignedAspect {
             byte[] xoredKey = signatureConfigManager.calculateXor(seed, signatureConfigManager.getMyKey());
 
             /* Concatenating xor result with body byte array */
-
-            String body = request.getReader().lines().collect(Collectors.joining());
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
             outputStream.write(xoredKey);
