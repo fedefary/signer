@@ -1,12 +1,12 @@
 # signer
 SpringBoot library for automatic and secure http request signing.
 
-This library provide you a way for signing your RestTemplate HTTP request accross microservices ensuring the identity of the client and the integrity of the HTTP payload.
+This library provide you a way for signing your RestTemplate HTTP request between microservices ensuring the identity of the client and the integrity of the HTTP payload.
 
 The library offers two annotations, @Sign and @Signed for client and server respectively.
 
 **@Sign**
-This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate rest client.
+This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate client.
 The library will add the necessary headers to the request that contain the signature, everything happens transparently for the user.
 
 **@Signed**
