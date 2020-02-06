@@ -22,23 +22,6 @@ Every rest API annotated with @Signed annotation will be secured and will requir
 
 *Obviously the two annotations will trigger the verification process only for the request that contain a body to sign.*
 
-Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
-On client side the secret key is used to generate the signature, on server side the same key is used for the singnature verification process.
-
-The property to set is *ffsec.signer.secret* and must contains a randomic generated string with any length (recommended 128/256/512 bit).
-
-It's also possible for the user to define the hashing algorithm used for the HMAC signature generation, the default is HmacSHA256 but also these algorithms are supported:
-
-- HmacMD5
-- HmacSHA1
-- HmacSHA256
-- HmacSHA384
-- HmacSHA512
-
-The property for the hashing algorithm is *ffsec.signer.algorithm* and the possible values are listed above.
-
-*Is important to define the same algorithm on both client and server to avoid problems*
-
 The library uses the Java Mac class provided by the JDK to make the symmetric signature.
 See the official Oracle documentation linked below for more details.
 
@@ -54,6 +37,8 @@ Clone the project, build and install it with the following maven command:
 
 ## Configurations
 
+### Library import
+
 Import the library into your maven project with the following dependecy on your pom:
 
 ```
@@ -64,10 +49,38 @@ Import the library into your maven project with the following dependecy on your 
 </dependency>
 ```
 
-The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the example below).
+### Library properties
+
+Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
+On client side the secret key is used to generate the signature, on server side the same key is used for the singnature verification process.
+
+The property to set is ***ffsec.signer.secret*** and must contains a randomic generated string with any length (recommended 128/256/512 bit).
+
+```
+ffsec.signer.secret=NV8UJUL81Y9F
+```
+
+It's also possible for the user to define the hashing algorithm used for the HMAC signature generation, the default is HmacSHA256 but also these algorithms are supported:
+
+- HmacMD5
+- HmacSHA1
+- HmacSHA256
+- HmacSHA384
+- HmacSHA512
+
+The property for the hashing algorithm is ***ffsec.signer.algorithm*** and the possible values are listed above.
+
+*Is important to define the same algorithm on both client and server to avoid problems*
+
+```
+ffsec.signer.algorithm=HmacSHA384
+```
+
+The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the usage example paragraph).
 
 *All the http calls must be executed with this instance otherwise the library does not work*
 
+## Coding Example
 This is an example for the client side usage:
 
 ```
