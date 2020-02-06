@@ -1,54 +1,47 @@
 # signer
-SpringBoot library for automatic and secure http request signing.
 
-This library provide you a way for signing your RestTemplate HTTP request between microservices ensuring the identity of the client and the integrity of the message.
+## Overview
 
-The library offers two annotations, @Sign and @Signed for client and server respectively.
+SpringBoot library for automatic and secure http request's signing using Spring RestTemplate.
 
-**@Sign**
+This library provide you a way for signing your http requests between SpringBoot microservices ensuring the identity of the client and the integrity of the message.
+The message is signed with a keyed-hash message authentication code (HMAC) generated with a pre-shared secret key, this allow you to authenticate your rest API in a smart way.
+
+## Description
+
+The library offers two annotations for client and server respectively.
+
+***@Sign***
+
 This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate client.
-The library will add the necessary headers to the request that contain the signature, everything happens transparently for the user.
+The library will attach the necessary header to the request that contain the signature, everything happens transparently for the user.
 
-**@Signed**
-This annotation must be placed on the called rest endpoint and notify the library that this method is signed and the http request must be validated.
-If the verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
-Every rest API annotated with @Signed annotation will be secured and will require a signed client. 
+***@Signed***
 
-*Obviously the two annotations will be trigger the verification process only for the HTTP that contain a body to sign.*
+This annotation must be placed on the called rest endpoint method and notify the library that this method is signed and the http request must be authenticated.
+If the signature verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
+Every rest API annotated with *@Signed* annotation will be secured and will require a signed request. 
 
-Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
-On client side the secret key is used to generate the signature, on server side the same key is used for the singnature verification process.
+*Obviously the two annotations will trigger the verification process only for the request that contain a body to sign.
+Put the annotations on top of a method that accept requests without body will have no effect.*
 
-The property to set is *ffsec.signer.secret* and must contains a randomic generated string with any length (recommended 128/256/512 bit).
-
-It's also possible for the user to define the hashing algorithm used for the signature generation, the default is HmacSHA256 but also these algorithms are supported:
-
-- HmacMD5
-- HmacSHA1
-- HmacSHA256
-- HmacSHA384
-- HmacSHA512
-
-The property for the hashing algorithm is *ffsec.signer.algorithm* and the possible values are listed above.
-
-*Is important to define the same algorithm on both client and server to avoid problems*
-
-The library uses the Java Mac class to make the symmetric signature.
+The library uses the Java Mac class provided by the JDK to make the symmetric signature.
 See the official Oracle documentation linked below for more details.
 
 https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
 
+## Building and installation
 
-**Building and installation**
-
-Clone the project, build and install it with the following maven command:
+Clone the project, build and install it with the following Maven command:
 
 *mvn clean install -DskipTests*
 
 
-**Configuration**
+## Configurations
 
-Import the library into your maven project with the following dependecy on your pom:
+### Library import
+
+In order to use the library you have to import it on your pom.xml as showed below:
 
 ```
 <dependency>
@@ -58,11 +51,37 @@ Import the library into your maven project with the following dependecy on your 
 </dependency>
 ```
 
-The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the example below).
+### Library properties
 
-*All the http calls must be executed with this instance otherwise the library does not work*
+Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
+On client side the secret key is used to generate the signature, on server side the same key is used for the signature verification process.
 
-This is an example for the client side usage:
+The property to set is ***ffsec.signer.secret*** and must contains a randomic generated string with any length (recommended 128/256/512 bit).
+
+```
+ffsec.signer.secret=NV8UJUL81Y9F
+```
+
+It's also possible for the user to define the hashing algorithm used for the HMAC signature generation, the default is HmacSHA256 but also these algorithms are supported:
+
+- HmacMD5
+- HmacSHA1
+- HmacSHA256
+- HmacSHA384
+- HmacSHA512
+
+The property for the hashing algorithm is ***ffsec.signer.algorithm*** and the possible values are listed above.
+
+*It's important to define the same algorithm on both client and server to avoid problems*
+
+```
+ffsec.signer.algorithm=HmacSHA384
+```
+
+## Coding Example
+
+
+### Client side implementation
 
 ```
 @RestController
@@ -81,7 +100,16 @@ public class ClientController {
 }
 ```
 
-This is an example for the server side usage:
+The library provides you an already instantiated RestTemplate bean that you can inject into your *@RestController* class or wherever it is needed.
+
+*All the http calls must be executed with this instance otherwise the library does not work.*
+
+#### Thread safety
+
+Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
+
+
+### Server side implementation
 
 ```
 @RestController
@@ -96,8 +124,9 @@ public class TestController {
 }
 ```
 
-Is also required the import of the library configuration class on your SpringBoot application.
-This is an example:
+### Configuration class 
+
+You have to import this configuration class on both client and server.
 
 ```
 @SpringBootApplication
@@ -109,4 +138,20 @@ public class DemoApplication {
     }
 
 }
+```
+
+## Logging
+
+The library uses ***SLF4J*** as logging facade system.
+
+Visit official documentation for more details:
+
+http://www.slf4j.org/docs.html
+
+If you want to enable the library's logs you have to configure the logging level DEBUG for the package ***com.ffsec***.
+
+This is an example with Log4j:
+
+```
+log4j.logger.com.ffsec=DEBUG
 ```
