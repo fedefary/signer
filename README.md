@@ -79,7 +79,9 @@ ffsec.signer.algorithm=HmacSHA384
 ```
 
 ## Coding Example
-This is an example for the client side usage:
+
+
+### Client implementation
 
 ```
 @RestController
@@ -103,7 +105,7 @@ The library provides you an already instantiated RestTemplate bean that you can 
 *All the http calls must be executed with this instance otherwise the library does not work*
 
 
-This is an example for the server side usage:
+### Server implementation
 
 ```
 @RestController
@@ -118,8 +120,9 @@ public class TestController {
 }
 ```
 
-It's also required the import of the library's configuration class on your SpringBoot application.
-This is an example:
+### Configuration class 
+
+You have to import this configuration class on both client and server.
 
 ```
 @SpringBootApplication
