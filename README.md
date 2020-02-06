@@ -14,7 +14,7 @@ The library offers two annotations for client and server respectively.
 ***@Sign***
 
 This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate client.
-The library will add the necessary headers to the request that contain the signature, everything happens transparently for the user.
+The library will attach the necessary header to the request that contain the signature, everything happens transparently for the user.
 
 ***@Signed***
 
