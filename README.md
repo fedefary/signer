@@ -23,24 +23,12 @@ If the verification process completes succesfully, the http request will be hand
 Every rest API annotated with @Signed annotation will be secured and will require a signed client. 
 
 *Obviously the two annotations will trigger the verification process only for the request that contain a body to sign.
-Put the annotations on top of a method that accept requests without body will have no effect*
+Put the annotations on top of a method that accept requests without body will have no effect.*
 
 The library uses the Java Mac class provided by the JDK to make the symmetric signature.
 See the official Oracle documentation linked below for more details.
 
 https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
-
-## Dependencies
-
-Following library is required in order to use *signer* library.
-
-```
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-web</artifactId>
-    <version>4.3.8.RELEASE</version>
-</dependency>
-```
 
 ## Building and installation
 
@@ -146,4 +134,18 @@ public class DemoApplication {
     }
 
 }
+```
+
+## Logging
+
+The library uses ***Slf4j*** as logging facade system.
+
+Visit official documentation for more details:
+http://www.slf4j.org/docs.html
+
+If you want to enable the internal library logs you have to enable the logging at DEBUG level for the package ***com.ffsec***.
+This is an example with Log4j:
+
+```
+log4j.logger.com.ffsec=DEBUG
 ```
