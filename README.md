@@ -2,6 +2,7 @@
 SpringBoot library for automatic and secure http request signing.
 
 This library provide you a way for signing your RestTemplate HTTP request between microservices ensuring the identity of the client and the integrity of the message.
+This allow you to securize yor rest API in a smart way.
 
 The library offers two annotations, @Sign and @Signed for client and server respectively.
 
@@ -33,7 +34,7 @@ The property for the hashing algorithm is *ffsec.signer.algorithm* and the possi
 
 *Is important to define the same algorithm on both client and server to avoid problems*
 
-The library uses the Java Mac class to make the symmetric signature.
+The library uses the Java Mac class provided by the JDK to make the symmetric signature.
 See the official Oracle documentation linked below for more details.
 
 https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
