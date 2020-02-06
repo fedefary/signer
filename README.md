@@ -9,7 +9,7 @@ The message is signed with a keyed-hash message authentication code (HMAC) gener
 
 ## Description
 
-The library offers two annotations, @Sign and @Signed for client and server respectively.
+The library offers two annotations for client and server respectively.
 
 ***@Sign***
 
@@ -54,7 +54,7 @@ Import the library into your maven project with the following dependecy on your 
 ### Library properties
 
 Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
-On client side the secret key is used to generate the signature, on server side the same key is used for the singnature verification process.
+On client side the secret key is used to generate the signature, on server side the same key is used for the signature verification process.
 
 The property to set is ***ffsec.signer.secret*** and must contains a randomic generated string with any length (recommended 128/256/512 bit).
 
