@@ -41,7 +41,7 @@ Clone the project, build and install it with the following Maven command:
 
 ### Library import
 
-In order to use the library you have to import it on you pom.xml as showed below:
+In order to use the library you have to import it on your pom.xml as showed below:
 
 ```
 <dependency>
