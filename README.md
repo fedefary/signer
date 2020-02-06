@@ -4,7 +4,7 @@
 
 SpringBoot library for automatic and secure http request's signing using Spring RestTemplate.
 
-This library provide you a way for signing your http requests between microservices ensuring the identity of the client and the integrity of the message.
+This library provide you a way for signing your http requests between SpringBoot microservices ensuring the identity of the client and the integrity of the message.
 The message is signed with a keyed-hash message authentication code (HMAC) generated with a pre-shared secret key, this allow you to authenticate your rest API in a smart way.
 
 ## Description
