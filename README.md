@@ -32,7 +32,7 @@ https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
 
 ## Building and installation
 
-Clone the project, build and install it with the following maven command:
+Clone the project, build and install it with the following Maven command:
 
 *mvn clean install -DskipTests*
 
@@ -41,7 +41,7 @@ Clone the project, build and install it with the following maven command:
 
 ### Library import
 
-Import the library into your maven project with the following dependecy on your pom:
+In order to use the library you have to import it on you pom.xml as showed below:
 
 ```
 <dependency>
