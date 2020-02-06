@@ -12,10 +12,12 @@ The message is signed with a keyed-hash message authentication code (HMAC) gener
 The library offers two annotations, @Sign and @Signed for client and server respectively.
 
 ***@Sign***
+
 This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate client.
 The library will add the necessary headers to the request that contain the signature, everything happens transparently for the user.
 
 ***@Signed***
+
 This annotation must be placed on the called rest endpoint and notify the library that this method is signed and the http request must be validated.
 If the verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
 Every rest API annotated with @Signed annotation will be secured and will require a signed client. 
