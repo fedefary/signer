@@ -1,4 +1,7 @@
 # signer
+
+## Overview
+
 SpringBoot library for automatic and secure http request signing.
 
 This library provide you a way for signing your RestTemplate HTTP request between microservices ensuring the identity of the client and the integrity of the message.
@@ -40,14 +43,14 @@ See the official Oracle documentation linked below for more details.
 https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
 
 
-**Building and installation**
+## Building and installation
 
 Clone the project, build and install it with the following maven command:
 
 *mvn clean install -DskipTests*
 
 
-**Configuration**
+## Configurations
 
 Import the library into your maven project with the following dependecy on your pom:
 
