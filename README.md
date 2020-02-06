@@ -29,7 +29,7 @@ See the official Oracle documentation linked below for more details.
 
 https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
 
-## Prerequisites
+## Dependencies
 
 Following library is required in order to use *signer* library.
 
