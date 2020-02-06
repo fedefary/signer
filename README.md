@@ -101,6 +101,7 @@ public class ClientController {
 ```
 
 The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed.
+Since the RestTemplate object does not change any of his state information to process HTTP, the same instance can be shared among multiple objects.
 
 *All the http calls must be executed with this instance otherwise the library does not work.*
 
