@@ -100,7 +100,7 @@ public class ClientController {
 }
 ```
 
-The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the usage example paragraph).
+The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed.
 
 *All the http calls must be executed with this instance otherwise the library does not work*
 
