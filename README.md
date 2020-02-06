@@ -102,11 +102,11 @@ public class ClientController {
 
 The library provides you an already instantiated RestTemplate bean that you can inject into your *@RestController* class or wherever it is needed.
 
+*All the http calls must be executed with this instance otherwise the library does not work.*
+
 #### Thread safety
 
-Since the RestTemplate object does not change any of his state informations to process HTTP, the object is thread safe so the same instance can be shared among multiple process.
-
-*All the http calls must be executed with this instance otherwise the library does not work.*
+Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
 
 
 ### Server implementation
