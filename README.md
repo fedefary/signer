@@ -18,9 +18,9 @@ The library will attach the necessary header to the request that contain the sig
 
 ***@Signed***
 
-This annotation must be placed on the called rest endpoint and notify the library that this method is signed and the http request must be validated.
-If the verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
-Every rest API annotated with @Signed annotation will be secured and will require a signed client. 
+This annotation must be placed on the called rest endpoint method and notify the library that this method is signed and the http request must be authenticated.
+If the signature verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
+Every rest API annotated with *@Signed* annotation will be secured and will require a signed request. 
 
 *Obviously the two annotations will trigger the verification process only for the request that contain a body to sign.
 Put the annotations on top of a method that accept requests without body will have no effect.*
