@@ -2,7 +2,7 @@
 SpringBoot library for automatic and secure http request signing.
 
 This library provide you a way for signing your RestTemplate HTTP request between microservices ensuring the identity of the client and the integrity of the message.
-This allow you to securize yor rest API in a smart way.
+The message is signed with a keyed-hash message authentication code (HMAC) generated with a pre-shared secret key, this allow you to securize yor rest API in a smart way.
 
 The library offers two annotations, @Sign and @Signed for client and server respectively.
 
@@ -22,7 +22,7 @@ On client side the secret key is used to generate the signature, on server side 
 
 The property to set is *ffsec.signer.secret* and must contains a randomic generated string with any length (recommended 128/256/512 bit).
 
-It's also possible for the user to define the hashing algorithm used for the signature generation, the default is HmacSHA256 but also these algorithms are supported:
+It's also possible for the user to define the hashing algorithm used for the HMAC signature generation, the default is HmacSHA256 but also these algorithms are supported:
 
 - HmacMD5
 - HmacSHA1
