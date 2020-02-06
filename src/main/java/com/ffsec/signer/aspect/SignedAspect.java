@@ -28,13 +28,10 @@ public class SignedAspect {
 
     Logger logger = LoggerFactory.getLogger(SignedAspect.class);
 
-    Mac mac;
+    private Mac mac;
 
     @Autowired
     SignatureConfigManager signatureConfigManager;
-
-    @Autowired
-    private HttpServletRequest request;
 
     @PostConstruct
     void initMac() throws NoSuchAlgorithmException {
@@ -51,13 +48,13 @@ public class SignedAspect {
 
         if(body != null) {
 
-            String signatureHeader = this.request.getHeader("Signature");
+            String signatureHeader = request.getHeader("Signature");
 
             if (signatureHeader == null) {
                 if(isDebugEnabled) {
-                    logger.debug("The received signature is is null");
+                    logger.debug("Signature header is missing");
                 }
-                throw new FingerprintVerificationException("Signature header missing");
+                throw new FingerprintVerificationException("Signature header is missing");
             }
 
             byte[] receivedSignature;
@@ -70,7 +67,7 @@ public class SignedAspect {
 
             if(isDebugEnabled) {
                 logger.debug("The received signature is {}", receivedSignature);
-                logger.debug("Verification process started");
+                logger.debug("Verification's process started");
             }
 
             byte[] byteKey = signatureConfigManager.getMyKey();
@@ -84,14 +81,13 @@ public class SignedAspect {
 
             boolean flag = Arrays.equals(receivedSignature, calculatedSignature);
 
-
             if (!flag) {
                 if(isDebugEnabled) {
-                    logger.debug("Verification process finished, the signature is not valid");
+                    logger.debug("Verification's process finished, the signature is not valid");
                 }
                 throw new FingerprintVerificationException();
             } else if(isDebugEnabled) {
-                logger.debug("Verification process finished, the signature is valid");
+                logger.debug("Verification's process finished, the signature is valid");
             }
 
         }

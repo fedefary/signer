@@ -11,19 +11,14 @@ public class SignatureConfigManager {
 
     Logger logger = LoggerFactory.getLogger(SignatureConfigManager.class);
 
-    public static final String MD5 = "HmacMD5";
-    public static final String SHA_1 = "HmacSHA1";
-    public static final String SHA_256 = "HmacSHA256";
-
     private byte[] myKey;
     private String algorithm;
-    private int size;
 
     @Value("${ffsec.signer.secret:#{null}}")
-    String secret;
+    private String secret;
 
     @Value("${ffsec.signer.algorithm:#{null}}")
-    String alg;
+    private String alg;
 
     @PostConstruct
     void init() throws Exception {
@@ -39,17 +34,15 @@ public class SignatureConfigManager {
             logger.debug("Secret key correctly initialized");
         }
 
-        if(MD5.equalsIgnoreCase(alg) || SHA_1.equalsIgnoreCase(alg) || SHA_256.equalsIgnoreCase(alg)) {
+        if(Algorithms.contains(alg)) {
             this.algorithm = alg;
         } else {
-            this.algorithm = SHA_256;
+            this.algorithm = Algorithms.valueOf("HmacSHA256").name();
         }
 
         if(isDebugEnabled) {
             logger.debug("Algorithm selected is {}", this.algorithm);
         }
-
-        this.size = MD5.equalsIgnoreCase(algorithm) ? 16 : (SHA_1.equalsIgnoreCase(algorithm) ? 20 : (SHA_256.equalsIgnoreCase(algorithm) ? 32 : 0));
 
     }
 
@@ -60,4 +53,5 @@ public class SignatureConfigManager {
     public byte[] getMyKey() {
         return myKey;
     }
+
 }
