@@ -138,7 +138,7 @@ public class DemoApplication {
 
 ## Logging
 
-The library uses ***Slf4j*** as logging facade system.
+The library uses ***SLF4J*** as logging facade system.
 
 Visit official documentation for more details:
 http://www.slf4j.org/docs.html
