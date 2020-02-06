@@ -72,15 +72,11 @@ It's also possible for the user to define the hashing algorithm used for the HMA
 
 The property for the hashing algorithm is ***ffsec.signer.algorithm*** and the possible values are listed above.
 
-*Is important to define the same algorithm on both client and server to avoid problems*
+*It's important to define the same algorithm on both client and server to avoid problems*
 
 ```
 ffsec.signer.algorithm=HmacSHA384
 ```
-
-The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the usage example paragraph).
-
-*All the http calls must be executed with this instance otherwise the library does not work*
 
 ## Coding Example
 This is an example for the client side usage:
@@ -101,6 +97,11 @@ public class ClientController {
     }
 }
 ```
+
+The library provides you an already instantiated RestTemplate bean that you can inject into your RestController or wherever it is needed (see the usage example paragraph).
+
+*All the http calls must be executed with this instance otherwise the library does not work*
+
 
 This is an example for the server side usage:
 
