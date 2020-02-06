@@ -148,7 +148,7 @@ Visit official documentation for more details:
 
 http://www.slf4j.org/docs.html
 
-If you want to enable the library's logs you have to configure the logging level DEBUG for the package ***com.ffsec***.
+If you want to enable the library's logs you have to configure the logging level DEBUG for the package ***com.ffsec***
 
 This is an example with Log4j:
 
