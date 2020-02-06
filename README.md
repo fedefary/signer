@@ -29,6 +29,17 @@ See the official Oracle documentation linked below for more details.
 
 https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
 
+## Prerequisites
+
+Following library is required in order to use *signer* library.
+
+```
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-web</artifactId>
+    <version>4.3.8.RELEASE</version>
+</dependency>
+```
 
 ## Building and installation
 
