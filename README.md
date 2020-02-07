@@ -23,7 +23,7 @@ If the signature verification process completes succesfully, the http request wi
 Every rest API annotated with *@Signed* annotation will be secured and will require a signed request. 
 
 *Obviously the two annotations will trigger the verification process only for the request that contain a body to sign.
-Put the annotations on top of a method that accept requests without body will have no effect.*
+Putting the annotations on top of a method that accept requests without body will have no effect.*
 
 The library uses the Java Mac class provided by the JDK to make the symmetric signature.
 See the official Oracle documentation linked below for more details.
