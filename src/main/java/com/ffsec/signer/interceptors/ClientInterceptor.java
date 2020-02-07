@@ -28,7 +28,7 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
-        boolean isDebugEnabled = logger.isDebugEnabled();
+        boolean isTraceEnabled = logger.isTraceEnabled();
 
         HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
@@ -40,7 +40,7 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
             if(body != null && body.length > 0) {
 
-                if (isDebugEnabled) {
+                if (isTraceEnabled) {
                     logger.debug("The request contains a body, signature's generation started");
                 }
 
@@ -49,7 +49,7 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
             } else if(!req.getParameterMap().isEmpty()) {
 
-                if (isDebugEnabled) {
+                if (isTraceEnabled) {
                     logger.debug("The request does not contain a body but only parameters, signature's generation started");
                 }
 
@@ -61,10 +61,12 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
             request.getHeaders().add("Signature", Base64.getEncoder().encodeToString(signature));
 
-            if (isDebugEnabled) {
+            if (isTraceEnabled) {
                 logger.debug("Signature's header attached to the request");
             }
 
+        } else if(isTraceEnabled) {
+            logger.debug("Nothing to sign");
         }
 
         return execution.execute(request,body);

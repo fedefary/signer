@@ -15,7 +15,9 @@ import java.security.NoSuchAlgorithmException;
 public class SignatureConfigManager {
 
     Logger logger = LoggerFactory.getLogger(SignatureConfigManager.class);
-    private boolean isDebugEnabled;
+
+    private boolean isTraceEnabled;
+    private boolean isErrorEnabled;
 
     private byte[] myKey;
     private String algorithm;
@@ -29,14 +31,15 @@ public class SignatureConfigManager {
     @PostConstruct
     void init() throws Exception {
 
-        isDebugEnabled = logger.isDebugEnabled();
+        isTraceEnabled = logger.isTraceEnabled();
+        isErrorEnabled = logger.isErrorEnabled();
 
         if(secret == null) {
             throw new Exception("You have to define the symmetric key into the property 'ffsec.signer.secret'");
         }
         myKey = secret.getBytes();
 
-        if(isDebugEnabled) {
+        if(isTraceEnabled) {
             logger.debug("Secret key correctly initialized");
         }
 
@@ -46,7 +49,7 @@ public class SignatureConfigManager {
             this.algorithm = Algorithms.valueOf("HmacSHA256").name();
         }
 
-        if(isDebugEnabled) {
+        if(isTraceEnabled) {
             logger.debug("Algorithm selected is {}", this.algorithm);
         }
 
@@ -66,8 +69,8 @@ public class SignatureConfigManager {
         try {
             mac = Mac.getInstance(getAlgorithm());
         } catch (NoSuchAlgorithmException e) {
-            if (isDebugEnabled) {
-                logger.debug("Error occured during Mac creation");
+            if (isErrorEnabled) {
+                logger.error("Error occured during Mac creation");
             }
         }
 
@@ -80,8 +83,8 @@ public class SignatureConfigManager {
         }
         byte[] signature = mac.doFinal(content);
 
-        if (isDebugEnabled) {
-            logger.debug("Signature's generation finished");
+        if (isErrorEnabled) {
+            logger.error("Signature's generation finished");
         }
 
         return signature;

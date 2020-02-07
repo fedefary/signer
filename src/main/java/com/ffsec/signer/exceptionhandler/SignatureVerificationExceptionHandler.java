@@ -1,6 +1,6 @@
 package com.ffsec.signer.exceptionhandler;
 
-import com.ffsec.signer.exception.FingerprintVerificationException;
+import com.ffsec.signer.exception.SignatureVerificationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,18 +11,20 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class FingerprintExceptionHandler extends ResponseEntityExceptionHandler {
+public class SignatureVerificationExceptionHandler extends ResponseEntityExceptionHandler {
 
-    Logger logger = LoggerFactory.getLogger(FingerprintExceptionHandler.class);
+    Logger logger = LoggerFactory.getLogger(SignatureVerificationExceptionHandler.class);
 
-    private static final String FINGERPRINT_VERIFICATION_ERROR = "The supplied signature is not valid";
+    private static final String SIGNATURE_VERIFICATION_ERROR = "The supplied signature is not valid";
 
-    @ExceptionHandler(FingerprintVerificationException.class)
+    @ExceptionHandler(SignatureVerificationException.class)
     public final ResponseEntity<String> handleAllExceptions(Exception ex, WebRequest request) {
-        if(logger.isWarnEnabled()) {
-            logger.warn(ex.getMessage());
+
+        if(logger.isErrorEnabled()) {
+            logger.error(ex.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FINGERPRINT_VERIFICATION_ERROR);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(SIGNATURE_VERIFICATION_ERROR);
+
     }
 
 }

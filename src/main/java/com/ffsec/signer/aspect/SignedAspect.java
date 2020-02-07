@@ -1,7 +1,8 @@
 package com.ffsec.signer.aspect;
 
 import com.ffsec.signer.config.SignatureConfigManager;
-import com.ffsec.signer.exception.FingerprintVerificationException;
+import com.ffsec.signer.exception.SignatureVerificationException;
+import com.ffsec.signer.utils.SignerUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -10,13 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import javax.annotation.PostConstruct;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.stream.Collectors;
@@ -28,68 +24,70 @@ public class SignedAspect {
 
     Logger logger = LoggerFactory.getLogger(SignedAspect.class);
 
-    private Mac mac;
-
     @Autowired
     SignatureConfigManager signatureConfigManager;
 
-    @PostConstruct
-    void initMac() throws NoSuchAlgorithmException {
-        mac = Mac.getInstance(signatureConfigManager.getAlgorithm());
-    }
 
     @Before("@annotation(com.ffsec.signer.annotations.Signed)")
-    public void preHandle() throws FingerprintVerificationException, IOException {
+    public void preHandle() throws SignatureVerificationException, IOException {
 
-        boolean isDebugEnabled = logger.isDebugEnabled();
+        boolean isTraceEnabled = logger.isTraceEnabled();
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String body = request.getReader().lines().collect(Collectors.joining());
 
-        if(body != null) {
+        String signatureHeader = request.getHeader("Signature");
 
-            String signatureHeader = request.getHeader("Signature");
+        byte[] receivedSignature;
 
-            if (signatureHeader == null) {
-                if(isDebugEnabled) {
-                    logger.debug("Signature header is missing");
-                }
-                throw new FingerprintVerificationException("Signature header is missing");
-            }
-
-            byte[] receivedSignature;
+        if (signatureHeader != null) {
 
             try {
                 receivedSignature = Base64.getDecoder().decode(signatureHeader);
             } catch (IllegalArgumentException ex) {
-                throw new FingerprintVerificationException(ex.getMessage());
+                throw new SignatureVerificationException(ex.getMessage());
             }
 
-            if(isDebugEnabled) {
+            if (isTraceEnabled) {
                 logger.debug("The received signature is {}", receivedSignature);
-                logger.debug("Verification's process started");
             }
 
-            byte[] byteKey = signatureConfigManager.getMyKey();
-            SecretKeySpec keySpec = new SecretKeySpec(byteKey, signatureConfigManager.getAlgorithm());
-            try {
-                mac.init(keySpec);
-            } catch (InvalidKeyException e) {
-                throw new FingerprintVerificationException(e.getMessage());
+            byte[] calculatedSignature = null;
+
+            if (body != null) {
+
+                if (isTraceEnabled) {
+                    logger.debug("The request contains a body, signature's verification started");
+                }
+
+                calculatedSignature = signatureConfigManager.generateSignature(body.getBytes());
+
+
+            } else if (!request.getParameterMap().isEmpty()) {
+
+                if (isTraceEnabled) {
+                    logger.debug("The request does not contain a body but only parameters, signature's verification started");
+                }
+
+                byte[] paramsByteArray = SignerUtils.convertRequestParameters(request.getParameterMap());
+
+                calculatedSignature = signatureConfigManager.generateSignature(paramsByteArray);
+
             }
-            byte[] calculatedSignature = mac.doFinal(body.getBytes());
 
             boolean flag = Arrays.equals(receivedSignature, calculatedSignature);
 
             if (!flag) {
-                if(isDebugEnabled) {
+                if (isTraceEnabled) {
                     logger.debug("Verification's process finished, the signature is not valid");
                 }
-                throw new FingerprintVerificationException();
-            } else if(isDebugEnabled) {
+                throw new SignatureVerificationException();
+            } else if (isTraceEnabled) {
                 logger.debug("Verification's process finished, the signature is valid");
             }
 
+        } else if (isTraceEnabled) {
+            logger.debug("The Signature header is not present, do nothing");
         }
 
     }
