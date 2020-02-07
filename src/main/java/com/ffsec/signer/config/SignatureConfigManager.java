@@ -9,6 +9,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @Component
 public class SignatureConfigManager {
@@ -59,14 +60,23 @@ public class SignatureConfigManager {
         return myKey;
     }
 
-    public byte[] generateSignature(Mac mac, byte[] content) throws IOException {
+    public byte[] generateSignature(byte[] content) throws IOException {
+
+        Mac mac = null;
+        try {
+            mac = Mac.getInstance(getAlgorithm());
+        } catch (NoSuchAlgorithmException e) {
+            if (isDebugEnabled) {
+                logger.debug("Error occured during Mac creation");
+            }
+        }
 
         byte[] byteKey = getMyKey();
         SecretKeySpec keySpec = new SecretKeySpec(byteKey, getAlgorithm());
         try {
             mac.init(keySpec);
         } catch (InvalidKeyException e) {
-            throw new IOException("Error during key initialization");
+            throw new IOException("Error occured during key initialization");
         }
         byte[] signature = mac.doFinal(content);
 

@@ -12,11 +12,8 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import javax.annotation.PostConstruct;
-import javax.crypto.Mac;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 
@@ -25,15 +22,8 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
     Logger logger = LoggerFactory.getLogger(ClientInterceptor.class);
 
-    private Mac mac;
-
     @Autowired
     SignatureConfigManager signatureConfigManager;
-
-    @PostConstruct
-    void initMac() throws NoSuchAlgorithmException {
-        mac = Mac.getInstance(signatureConfigManager.getAlgorithm());
-    }
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
@@ -54,7 +44,7 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
                     logger.debug("The request contains a body, signature's generation started");
                 }
 
-                signature = signatureConfigManager.generateSignature(mac,body);
+                signature = signatureConfigManager.generateSignature(body);
 
 
             } else if(!req.getParameterMap().isEmpty()) {
@@ -65,7 +55,7 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
                 byte[] paramsByteArray = SignerUtils.convertRequestParameters(req.getParameterMap());
 
-                signature = signatureConfigManager.generateSignature(mac,paramsByteArray);
+                signature = signatureConfigManager.generateSignature(paramsByteArray);
 
             }
 
