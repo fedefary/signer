@@ -143,7 +143,7 @@ Using the two annotations at the same time on the same SpringBoot instance will 
 
 Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
 
-If signature's generation process and signature's verification process run at the same time on the same SpringBoot instance two different instances of Mac class are used, Mac objects are stateful so they can't be used by multiple threads.
+If multiple generation's/verification's processes run at the same time on the same SpringBoot instance different instances of Mac class are used, Mac objects are stateful so they can't be used by multiple threads.
 
 ## Logging
 
