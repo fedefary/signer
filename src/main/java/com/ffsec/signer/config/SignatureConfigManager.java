@@ -5,11 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
+import java.security.InvalidKeyException;
 
 @Component
 public class SignatureConfigManager {
 
     Logger logger = LoggerFactory.getLogger(SignatureConfigManager.class);
+    private boolean isDebugEnabled;
 
     private byte[] myKey;
     private String algorithm;
@@ -23,7 +28,7 @@ public class SignatureConfigManager {
     @PostConstruct
     void init() throws Exception {
 
-        boolean isDebugEnabled = logger.isDebugEnabled();
+        isDebugEnabled = logger.isDebugEnabled();
 
         if(secret == null) {
             throw new Exception("You have to define the symmetric key into the property 'ffsec.signer.secret'");
@@ -52,6 +57,25 @@ public class SignatureConfigManager {
 
     public byte[] getMyKey() {
         return myKey;
+    }
+
+    public byte[] generateSignature(Mac mac, byte[] content) throws IOException {
+
+        byte[] byteKey = getMyKey();
+        SecretKeySpec keySpec = new SecretKeySpec(byteKey, getAlgorithm());
+        try {
+            mac.init(keySpec);
+        } catch (InvalidKeyException e) {
+            throw new IOException("Error during key initialization");
+        }
+        byte[] signature = mac.doFinal(content);
+
+        if (isDebugEnabled) {
+            logger.debug("Signature's generation finished");
+        }
+
+        return signature;
+
     }
 
 }

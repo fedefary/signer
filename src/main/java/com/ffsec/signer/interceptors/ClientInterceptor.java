@@ -1,6 +1,7 @@
 package com.ffsec.signer.interceptors;
 
 import com.ffsec.signer.config.SignatureConfigManager;
+import com.ffsec.signer.utils.SignerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.PostConstruct;
 import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
@@ -43,30 +42,36 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
         HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-        if("true".equalsIgnoreCase((String)req.getAttribute("sign")) && body != null && body.length > 0) {
+        if("true".equalsIgnoreCase((String)req.getAttribute("sign"))) {
 
             req.removeAttribute("sign");
 
-            if(isDebugEnabled) {
-                logger.debug("The request contains a body, signature's generation started");
-            }
+            byte[] signature = null;
 
-            byte[] byteKey = signatureConfigManager.getMyKey();
-            SecretKeySpec keySpec = new SecretKeySpec(byteKey, signatureConfigManager.getAlgorithm());
-            try {
-                mac.init(keySpec);
-            } catch (InvalidKeyException e) {
-                throw new IOException("Error during key initialization");
-            }
-            byte[] signature = mac.doFinal(body);
+            if(body != null && body.length > 0) {
 
-            if(isDebugEnabled) {
-                logger.debug("Signature's generation finished");
+                if (isDebugEnabled) {
+                    logger.debug("The request contains a body, signature's generation started");
+                }
+
+                signature = signatureConfigManager.generateSignature(mac,body);
+
+
+            } else if(!req.getParameterMap().isEmpty()) {
+
+                if (isDebugEnabled) {
+                    logger.debug("The request does not contain a body but only parameters, signature's generation started");
+                }
+
+                byte[] paramsByteArray = SignerUtils.convertRequestParameters(req.getParameterMap());
+
+                signature = signatureConfigManager.generateSignature(mac,paramsByteArray);
+
             }
 
             request.getHeaders().add("Signature", Base64.getEncoder().encodeToString(signature));
 
-            if(isDebugEnabled) {
+            if (isDebugEnabled) {
                 logger.debug("Signature's header attached to the request");
             }
 
