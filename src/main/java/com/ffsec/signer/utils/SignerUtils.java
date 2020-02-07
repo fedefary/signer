@@ -8,7 +8,7 @@ public class SignerUtils {
 
     public static byte[] convertRequestParameters(Map<String,String[]> params) {
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(());
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         params.forEach((k,v) -> {
             byte[] byteArray;
@@ -22,7 +22,7 @@ public class SignerUtils {
             }
         });
 
-        byteArrayOutputStream.toByteArray();
+        return byteArrayOutputStream.toByteArray();
 
     }
 }
