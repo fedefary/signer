@@ -40,7 +40,7 @@ public class SignatureConfigManager {
         myKey = secret.getBytes();
 
         if(isTraceEnabled) {
-            logger.debug("Secret key correctly initialized");
+            logger.trace("Secret key correctly initialized");
         }
 
         if(Algorithms.contains(alg)) {
@@ -50,7 +50,7 @@ public class SignatureConfigManager {
         }
 
         if(isTraceEnabled) {
-            logger.debug("Algorithm selected is {}", this.algorithm);
+            logger.trace("Algorithm selected is {}", this.algorithm);
         }
 
     }

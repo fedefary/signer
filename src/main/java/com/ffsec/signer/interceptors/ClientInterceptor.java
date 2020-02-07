@@ -41,7 +41,7 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
             if(body != null && body.length > 0) {
 
                 if (isTraceEnabled) {
-                    logger.debug("The request contains a body, signature's generation started");
+                    logger.trace("The request contains a body, signature's generation started");
                 }
 
                 signature = signatureConfigManager.generateSignature(body);
@@ -50,7 +50,7 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
             } else if(!req.getParameterMap().isEmpty()) {
 
                 if (isTraceEnabled) {
-                    logger.debug("The request does not contain a body but only parameters, signature's generation started");
+                    logger.trace("The request does not contain a body but only parameters, signature's generation started");
                 }
 
                 byte[] paramsByteArray = SignerUtils.convertRequestParameters(req.getParameterMap());
@@ -62,11 +62,11 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
             request.getHeaders().add("Signature", Base64.getEncoder().encodeToString(signature));
 
             if (isTraceEnabled) {
-                logger.debug("Signature's header attached to the request");
+                logger.trace("Signature's header attached to the request");
             }
 
         } else if(isTraceEnabled) {
-            logger.debug("Nothing to sign");
+            logger.trace("Nothing to sign");
         }
 
         return execution.execute(request,body);

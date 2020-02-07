@@ -49,7 +49,7 @@ public class SignedAspect {
             }
 
             if (isTraceEnabled) {
-                logger.debug("The received signature is {}", receivedSignature);
+                logger.trace("The received signature is {}", receivedSignature);
             }
 
             byte[] calculatedSignature = null;
@@ -57,7 +57,7 @@ public class SignedAspect {
             if (body != null) {
 
                 if (isTraceEnabled) {
-                    logger.debug("The request contains a body, signature's verification started");
+                    logger.trace("The request contains a body, signature's verification started");
                 }
 
                 calculatedSignature = signatureConfigManager.generateSignature(body.getBytes());
@@ -66,7 +66,7 @@ public class SignedAspect {
             } else if (!request.getParameterMap().isEmpty()) {
 
                 if (isTraceEnabled) {
-                    logger.debug("The request does not contain a body but only parameters, signature's verification started");
+                    logger.trace("The request does not contain a body but only parameters, signature's verification started");
                 }
 
                 byte[] paramsByteArray = SignerUtils.convertRequestParameters(request.getParameterMap());
@@ -79,15 +79,15 @@ public class SignedAspect {
 
             if (!flag) {
                 if (isTraceEnabled) {
-                    logger.debug("Verification's process finished, the signature is not valid");
+                    logger.trace("Verification's process finished, the signature is not valid");
                 }
                 throw new SignatureVerificationException();
             } else if (isTraceEnabled) {
-                logger.debug("Verification's process finished, the signature is valid");
+                logger.trace("Verification's process finished, the signature is valid");
             }
 
         } else if (isTraceEnabled) {
-            logger.debug("The Signature header is not present, do nothing");
+            logger.trace("The Signature header is not present, do nothing");
         }
 
     }
