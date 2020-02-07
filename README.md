@@ -74,6 +74,8 @@ The property for the hashing algorithm is ***ffsec.signer.algorithm*** and the p
 
 *It's important to define the same algorithm on both client and server to avoid problems*
 
+***This property is mandatory, if you don't define it an Exception will be throwed at startup***
+
 ```
 ffsec.signer.algorithm=HmacSHA384
 ```
@@ -155,7 +157,7 @@ http://www.slf4j.org/docs.html
 
 If you want to enable the library's logs you have to configure the logging level TRACE for the package ***com.ffsec***
 
-The exception are logged at ERROR level.
+The exceptions are catched and logged at ERROR level.
 
 This is an example with Log4j:
 
