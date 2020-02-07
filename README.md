@@ -104,10 +104,6 @@ The library provides you an already instantiated RestTemplate bean that you can 
 
 *All the http calls must be executed with this instance otherwise the library does not work.*
 
-#### Thread safety
-
-Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
-
 
 ### Server side implementation
 
@@ -139,6 +135,15 @@ public class DemoApplication {
 
 }
 ```
+
+## Multithreading
+
+The library is thread safe.
+Using the two annotations at the same time on the same SpringBoot instance will not generate concurrency issues.
+
+Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
+
+If signature's generation process and signature's verification process run at the same time on the same SpringBoot instance two different instances of Mac class are used, Mac objects are stateful so they can't be used by multiple threads.
 
 ## Logging
 
