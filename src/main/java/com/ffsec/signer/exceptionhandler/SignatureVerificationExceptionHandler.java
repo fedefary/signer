@@ -15,15 +15,13 @@ public class SignatureVerificationExceptionHandler extends ResponseEntityExcepti
 
     Logger logger = LoggerFactory.getLogger(SignatureVerificationExceptionHandler.class);
 
-    private static final String SIGNATURE_VERIFICATION_ERROR = "The supplied signature is not valid";
-
     @ExceptionHandler(SignatureVerificationException.class)
-    public final ResponseEntity<String> handleAllExceptions(Exception ex, WebRequest request) {
+    public final ResponseEntity<String> handleAllExceptions(SignatureVerificationException ex, WebRequest request) {
 
         if(logger.isErrorEnabled()) {
             logger.error(ex.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(SIGNATURE_VERIFICATION_ERROR);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
 
     }
 

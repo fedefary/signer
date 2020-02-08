@@ -83,8 +83,8 @@ public class SignatureConfigManager {
         }
         byte[] signature = mac.doFinal(content);
 
-        if (isErrorEnabled) {
-            logger.error("Signature's generation finished");
+        if (isTraceEnabled) {
+            logger.trace("Signature's generation finished");
         }
 
         return signature;

@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -33,8 +33,12 @@ public class SignedAspect {
 
         boolean isTraceEnabled = logger.isTraceEnabled();
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String body = request.getReader().lines().collect(Collectors.joining());
+        ContentCachingRequestWrapper request = (ContentCachingRequestWrapper) ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        byte[] body = request.getContentAsByteArray();
+
+        if(body.length == 0) {
+            body = StreamUtils.copyToByteArray(request.getInputStream());
+        }
 
         String signatureHeader = request.getHeader("Signature");
 
@@ -45,7 +49,7 @@ public class SignedAspect {
             try {
                 receivedSignature = Base64.getDecoder().decode(signatureHeader);
             } catch (IllegalArgumentException ex) {
-                throw new SignatureVerificationException(ex.getMessage());
+                throw new SignatureVerificationException("The supplied signature is not valid");
             }
 
             if (isTraceEnabled) {
@@ -54,13 +58,13 @@ public class SignedAspect {
 
             byte[] calculatedSignature = null;
 
-            if (body != null) {
+            if (body != null && body.length > 0) {
 
                 if (isTraceEnabled) {
                     logger.trace("The request contains a body, signature's verification started");
                 }
 
-                calculatedSignature = signatureConfigManager.generateSignature(body.getBytes());
+                calculatedSignature = signatureConfigManager.generateSignature(body);
 
 
             } else if (!request.getParameterMap().isEmpty()) {
@@ -81,13 +85,16 @@ public class SignedAspect {
                 if (isTraceEnabled) {
                     logger.trace("Verification's process finished, the signature is not valid");
                 }
-                throw new SignatureVerificationException();
+                throw new SignatureVerificationException("The supplied signature is not valid");
             } else if (isTraceEnabled) {
                 logger.trace("Verification's process finished, the signature is valid");
             }
 
-        } else if (isTraceEnabled) {
-            logger.trace("The Signature header is not present, do nothing");
+        } else {
+            if (isTraceEnabled) {
+                logger.trace("The Signature header is not present");
+            }
+            throw new SignatureVerificationException("The Signature header is not present");
         }
 
     }

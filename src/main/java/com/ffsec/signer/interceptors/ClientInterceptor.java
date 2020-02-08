@@ -57,6 +57,11 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
                 signature = signatureConfigManager.generateSignature(paramsByteArray);
 
+            } else {
+                if (isTraceEnabled) {
+                    logger.trace("There is nothing to sign, proceeding");
+                }
+                return execution.execute(request,body);
             }
 
             request.getHeaders().add("Signature", Base64.getEncoder().encodeToString(signature));
