@@ -64,7 +64,7 @@ The property to set is ***ffsec.signer.secret*** and must contains a randomic ge
 ffsec.signer.secret=NV8UJUL81Y9F
 ```
 
-***This property is mandatory, if you don't define it an Exception will be throwed at SpringBoot's startup***
+***This property is mandatory, if you don't define it an Exception will be throwed at SpringBoot's startup.***
 
 It's also possible to define the hashing algorithm used for the signature generation, the default is *HmacSHA256* but also these algorithms are supported:
 
@@ -74,13 +74,13 @@ It's also possible to define the hashing algorithm used for the signature genera
 - HmacSHA384
 - HmacSHA512
 
-The property to set is ***ffsec.signer.algorithm*** and the possible values are listed above.
-
-***It's important to define the same algorithm on both client and server to avoid problems.***
+The property to set is ***ffsec.signer.algorithm*** and the possible values are listed above, see the following example.
 
 ```
 ffsec.signer.algorithm=HmacSHA384
 ```
+
+***It's important to define the same algorithm on both client and server to avoid problems.***
 
 ## Coding Example
 
