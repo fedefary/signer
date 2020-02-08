@@ -106,7 +106,7 @@ public class ClientController {
 
 The library provides you an already instantiated RestTemplate bean that you can inject into your *@RestController* class or wherever it is needed.
 
-*All the http calls must be executed with this instance otherwise the library does not work.*
+***All the http calls must be executed with this instance otherwise the library does not work.***
 
 
 ### Server side implementation
@@ -142,8 +142,7 @@ public class DemoApplication {
 
 ## Multithreading
 
-The library is thread safe.
-Using the two annotations at the same time on the same SpringBoot instance will not generate concurrency issues.
+The library can be considered thread safe, no concurrency issues found at the time of writing.
 
 Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
 
