@@ -16,7 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Base64;
 
-
+/**
+ * This class provide an implementation of {@link ClientHttpRequestInterceptor}
+ * It is responsible of signature generation.
+ * @author Federico Farinetto
+ */
 @Component
 public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
