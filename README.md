@@ -56,15 +56,17 @@ In order to use the library you have to import it on your pom.xml as showed belo
 Set the following properties into your *aplication.properties* or *application.yml*.
 
 Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
-On client side the secret key is used to generate the signature, on server side the same key is used for the signature verification process.
+On client side the secret key is used to generate the signature, on server side the same key is used for the signature's verification process.
 
-The property to set is ***ffsec.signer.secret*** and must contains a randomic generated string with any length (recommended 128/256/512 bit).
+The property to set is ***ffsec.signer.secret*** and must contains a randomic generated string with any length (recommended 128/256/512 bit) as in the following example.
 
 ```
 ffsec.signer.secret=NV8UJUL81Y9F
 ```
 
-It's also possible for the user to define the hashing algorithm used for the HMAC signature generation, the default is HmacSHA256 but also these algorithms are supported:
+***This property is mandatory, if you don't define it an Exception will be throwed at SpringBoot's startup***
+
+It's also possible to define the hashing algorithm used for the signature generation, the default is *HmacSHA256* but also these algorithms are supported:
 
 - HmacMD5
 - HmacSHA1
@@ -72,11 +74,9 @@ It's also possible for the user to define the hashing algorithm used for the HMA
 - HmacSHA384
 - HmacSHA512
 
-The property for the hashing algorithm is ***ffsec.signer.algorithm*** and the possible values are listed above.
+The property to set is ***ffsec.signer.algorithm*** and the possible values are listed above.
 
-*It's important to define the same algorithm on both client and server to avoid problems*
-
-***This property is mandatory, if you don't define it an Exception will be throwed at SpringBoot's startup***
+***It's important to define the same algorithm on both client and server to avoid problems.***
 
 ```
 ffsec.signer.algorithm=HmacSHA384
