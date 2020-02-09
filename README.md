@@ -95,7 +95,7 @@ public class ClientController {
 
     @Sign
     @GetMapping("client")
-    public ResponseEntity<String> test() {
+    public ResponseEntity<String> client() {
 
         return restTemplate.postForEntity("http://localhost:8080/server", "the brown fox jumps over the lazy dog" , String.class);
 
@@ -112,11 +112,11 @@ The library provides you an already instantiated RestTemplate bean that you can 
 
 ```
 @RestController
-public class TestController {
+public class ServerController {
 
     @Signed
     @PostMapping(value = "server", consumes = "text/plain")
-    public ResponseEntity<String> demoSigned(@RequestBody String body) {
+    public ResponseEntity<String> server(@RequestBody String body) {
         return ResponseEntity.ok("OK");
     }
     
