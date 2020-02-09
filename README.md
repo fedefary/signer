@@ -146,7 +146,7 @@ The library can be considered thread safe, no concurrency issues found at the ti
 
 Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
 
-If multiple generation's/verification's processes run at the same time on the same SpringBoot instance different instances of Mac class are used, Mac objects are stateful so they can't be used by multiple threads.
+If multiple generation's/verification's processes run at the same time on the same SpringBoot instance, different instances of Mac class are used, Mac objects are stateful so they can't be used by multiple threads.
 
 ## Logging
 
