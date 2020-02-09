@@ -2,7 +2,6 @@ package com.ffsec.signer.aspect;
 
 import com.ffsec.signer.config.SignatureConfigManager;
 import com.ffsec.signer.exception.SignatureVerificationException;
-import com.ffsec.signer.utils.SignerUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -56,9 +55,9 @@ public class SignedAspect {
                 logger.trace("The received signature is {}", receivedSignature);
             }
 
-            byte[] calculatedSignature = null;
+            byte[] calculatedSignature;
 
-            if (body != null && body.length > 0) {
+            if (body.length > 0) {
 
                 if (isTraceEnabled) {
                     logger.trace("The request contains a body, signature's verification started");
@@ -67,15 +66,23 @@ public class SignedAspect {
                 calculatedSignature = signatureConfigManager.generateSignature(body);
 
 
-            } else if (!request.getParameterMap().isEmpty()) {
+            } else {
 
                 if (isTraceEnabled) {
-                    logger.trace("The request does not contain a body but only parameters, signature's verification started");
+                    logger.trace("The request does not contain a body, using custom header");
+                    logger.trace("Signature's verification started");
                 }
 
-                byte[] paramsByteArray = SignerUtils.convertRequestParameters(request.getParameterMap());
+                String seedHeader = request.getHeader("Seed");
+                byte[] seed;
 
-                calculatedSignature = signatureConfigManager.generateSignature(paramsByteArray);
+                try {
+                    seed = Base64.getDecoder().decode(seedHeader);
+                } catch (IllegalArgumentException ex) {
+                    throw new SignatureVerificationException("The randomic generated seed can't be decoded");
+                }
+
+                calculatedSignature = signatureConfigManager.generateSignature(seed);
 
             }
 

@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.ffsec</groupId>
     <artifactId>signer</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <name>signer</name>
     <description>SpringBoot library for automatic and secure http request's signing using Spring RestTemplate</description>
 
@@ -49,6 +49,7 @@
                 <configuration>
                     <excludes>
                         <exclude>com/ffsec/signer/SignerApplication.class</exclude>
+                        <exclude>application.properties</exclude>
                     </excludes>
                 </configuration>
             </plugin>

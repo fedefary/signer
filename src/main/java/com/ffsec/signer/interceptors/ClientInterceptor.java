@@ -1,7 +1,6 @@
 package com.ffsec.signer.interceptors;
 
 import com.ffsec.signer.config.SignatureConfigManager;
-import com.ffsec.signer.utils.SignerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Random;
 
 /**
  * This class provide an implementation of {@link ClientHttpRequestInterceptor}
@@ -40,9 +42,9 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
 
             req.removeAttribute("sign");
 
-            byte[] signature = null;
+            byte[] signature;
 
-            if(body != null && body.length > 0) {
+            if(body.length > 0) {
 
                 if (isTraceEnabled) {
                     logger.trace("The request contains a body, signature's generation started");
@@ -51,21 +53,21 @@ public class ClientInterceptor implements ClientHttpRequestInterceptor {
                 signature = signatureConfigManager.generateSignature(body);
 
 
-            } else if(!req.getParameterMap().isEmpty()) {
-
-                if (isTraceEnabled) {
-                    logger.trace("The request does not contain a body but only parameters, signature's generation started");
-                }
-
-                byte[] paramsByteArray = SignerUtils.convertRequestParameters(req.getParameterMap());
-
-                signature = signatureConfigManager.generateSignature(paramsByteArray);
-
             } else {
+
                 if (isTraceEnabled) {
-                    logger.trace("There is nothing to sign, proceeding");
+                    logger.trace("The request does not contain a body, using custom header");
+                    logger.trace("Signature's generation started");
                 }
-                return execution.execute(request,body);
+
+                byte[] array = new byte[32];
+                new Random().nextBytes(array);
+                String generatedString = new String(array, StandardCharsets.UTF_8);
+
+                signature = signatureConfigManager.generateSignature(generatedString.getBytes());
+
+                request.getHeaders().add("Seed", Base64.getEncoder().encodeToString(generatedString.getBytes()));
+
             }
 
             request.getHeaders().add("Signature", Base64.getEncoder().encodeToString(signature));
