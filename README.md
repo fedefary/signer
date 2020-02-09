@@ -162,5 +162,5 @@ The exceptions are catched and logged at ERROR level.
 This is an example with Log4j:
 
 ```
-log4j.logger.com.ffsec=DEBUG
+log4j.logger.com.ffsec=TRACE
 ```
