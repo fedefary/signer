@@ -171,6 +171,6 @@ This is an example with Log4j:
 log4j.logger.com.ffsec=TRACE
 ```
 
-###License
+## License
 
 This software is distributed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
