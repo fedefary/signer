@@ -40,7 +40,7 @@ Clone the project, build and install it with the following Maven command:
 
 ### Library import
 
-In order to use the library you have to import it on your pom.xml as showed below:
+In order to use the library you have to import it on your pom.xml as shown below:
 
 ```
 <dependency>
@@ -80,6 +80,8 @@ ffsec.signer.algorithm=HmacSHA384
 ```
 
 ***It's important to define the same algorithm on both client and server to avoid problems.***
+
+If you define a string that is not equals to one of the possible values listed above, the default value will be used.
 
 ## Coding Example
 
@@ -127,7 +129,7 @@ public class ServerController {
 
 ### Configuration class 
 
-You have to import this configuration class on both client and server.
+You have to import thie configuration class ***SignerConfiguration.class*** on both client and server.
 
 ```
 @SpringBootApplication
