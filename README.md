@@ -7,6 +7,7 @@ SpringBoot library for automatic and secure http request's signing using Spring 
 This library provide you a way for signing your http requests between SpringBoot microservices ensuring the identity of the client and the integrity of the message.
 The message is signed with a keyed-hash message authentication code (HMAC) generated with a pre-shared secret key, this allow you to authenticate your rest API in a smart way.
 
+
 ## Description
 
 The library offers two annotations for client and server respectively.
@@ -29,11 +30,13 @@ See the official Oracle documentation linked below for more details.
 
 https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
 
+
 ## Building and installation
 
 Clone the project, build and install it with the following Maven command:
 
 *mvn clean install -DskipTests*
+
 
 
 ## Configurations
@@ -83,6 +86,7 @@ ffsec.signer.algorithm=HmacSHA384
 
 If you define a string that is not equals to one of the possible values listed above, the default value will be used.
 
+
 ## Coding Example
 
 
@@ -129,7 +133,7 @@ public class ServerController {
 
 ### Configuration class 
 
-You have to import thie configuration class ***SignerConfiguration.class*** on both client and server.
+You have to import the configuration class ***SignerConfiguration.class*** on both client and server.
 
 ```
 @SpringBootApplication
@@ -143,6 +147,7 @@ public class DemoApplication {
 }
 ```
 
+
 ## Multithreading
 
 The library can be considered thread safe, no concurrency issues found at the time of writing.
@@ -150,6 +155,7 @@ The library can be considered thread safe, no concurrency issues found at the ti
 Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
 
 If multiple generation's/verification's processes run at the same time on the same SpringBoot instance, different instances of Mac class are used, Mac objects are stateful so they can't be used by multiple threads.
+
 
 ## Logging
 
