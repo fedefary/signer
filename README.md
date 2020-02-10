@@ -13,17 +13,16 @@ The library offers two annotations for client and server respectively.
 
 ***@Sign***
 
-This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate client.
+This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate client (not necessary a controller's method).
 The library will attach the necessary header to the request that contain the signature, everything happens transparently for the user.
 
 ***@Signed***
 
-This annotation must be placed on the called rest endpoint method and notify the library that this method is signed and the http request must be authenticated.
+This annotation must be placed on the called controller's method and notify the library that this method is signed and the http request must be authenticated.
 If the signature verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
 Every rest API annotated with *@Signed* annotation will be secured and will require a signed request. 
 
-*Obviously the two annotations will trigger the verification process only for the request that contain a body or a parameters to sign.
-If you mark as @Sign a method that make an http call to a @Signed method without body or parameters will cause a 401 UNAUTHORIZED error.*
+*In case of body's presence into the request, this content will be used for the signature's generation. Otherwise the signature will be calculated from a randomic generated seed that will be attached to the request as header.*
 
 The library uses the Java Mac class provided by the JDK to make the symmetric signature.
 See the official Oracle documentation linked below for more details.
@@ -96,7 +95,7 @@ public class ClientController {
 
     @Sign
     @GetMapping("client")
-    public ResponseEntity<String> test() {
+    public ResponseEntity<String> client() {
 
         return restTemplate.postForEntity("http://localhost:8080/server", "the brown fox jumps over the lazy dog" , String.class);
 
@@ -113,11 +112,11 @@ The library provides you an already instantiated RestTemplate bean that you can 
 
 ```
 @RestController
-public class TestController {
+public class ServerController {
 
     @Signed
     @PostMapping(value = "server", consumes = "text/plain")
-    public ResponseEntity<String> demoSigned(@RequestBody String body) {
+    public ResponseEntity<String> server(@RequestBody String body) {
         return ResponseEntity.ok("OK");
     }
     
@@ -163,5 +162,5 @@ The exceptions are catched and logged at ERROR level.
 This is an example with Log4j:
 
 ```
-log4j.logger.com.ffsec=DEBUG
+log4j.logger.com.ffsec=TRACE
 ```
