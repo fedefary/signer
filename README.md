@@ -13,12 +13,12 @@ The library offers two annotations for client and server respectively.
 
 ***@Sign***
 
-This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate client.
+This annotation must be placed on the client method inside wich the http call is made with Spring RestTemplate client (not necessary a controller's method).
 The library will attach the necessary header to the request that contain the signature, everything happens transparently for the user.
 
 ***@Signed***
 
-This annotation must be placed on the called rest endpoint method and notify the library that this method is signed and the http request must be authenticated.
+This annotation must be placed on the called controller's method and notify the library that this method is signed and the http request must be authenticated.
 If the signature verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
 Every rest API annotated with *@Signed* annotation will be secured and will require a signed request. 
 
