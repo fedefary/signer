@@ -18,8 +18,9 @@ import java.util.Base64;
 import java.util.Random;
 
 /**
- * This class provide an implementation of {@link ClientHttpRequestInterceptor}
- * It is responsible of signature generation.
+ * This class provide an implementation of {@link ClientHttpRequestInterceptor}.
+ * It is responsible of signature generation and Signature header creation.
+ *
  * @author Federico Farinetto
  */
 @Component

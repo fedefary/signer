@@ -3,6 +3,11 @@ package com.ffsec.signer.config;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Enum that contains supported HMAC types.
+ *
+ * @author Federico Farinetto
+ */
 public enum Algorithms {
 
     HmacMD5,

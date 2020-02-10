@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * {@link ExceptionHandler} for {@link SignatureVerificationException}
+ *
+ * @author Federico Farinetto
+ */
 @ControllerAdvice
 public class SignatureVerificationExceptionHandler extends ResponseEntityExceptionHandler {
 

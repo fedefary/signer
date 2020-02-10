@@ -10,6 +10,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**
+ * Filter that convert the request to {@link HttpServletRequest} to {@link ContentCachingRequestWrapper}.
+ * This class permits multiple reads of the request's body.
+ *
+ * @author Federico Farinetto
+ */
 @Component
 public class CachingRequestBodyFilter extends GenericFilterBean {
 

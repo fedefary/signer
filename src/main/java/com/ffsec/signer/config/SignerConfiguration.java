@@ -9,13 +9,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Library's configuration class.
+ * It contains the instantiation's method of the {@link RestTemplate} instance used by the library.
+ *
+ * @author Federico Farinetto
+ */
 @Configuration
 @ComponentScan(basePackages = "com.ffsec")
 @AutoConfigureAfter(value=RestTemplateAutoConfiguration.class)
 @ConditionalOnClass(value=RestTemplateAutoConfiguration.class)
-public class SignerConfiguration implements WebMvcConfigurer {
+public class SignerConfiguration {
 
     @Autowired
     private ClientInterceptor clientInterceptor;

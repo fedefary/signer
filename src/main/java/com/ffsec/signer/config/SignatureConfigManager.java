@@ -11,6 +11,12 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * This class initialize the secret key and the algorithm used for the signature's generation and it is
+ * responsible of signature' generation.
+ *
+ * @author Federico Farinetto
+ */
 @Component
 public class SignatureConfigManager {
 

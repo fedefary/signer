@@ -16,7 +16,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
 
-
+/**
+ * This aspect is invoked when a method is annotated with {@link com.ffsec.signer.annotations.Signed}
+ * It is responsible of signature's verification.
+ *
+ * @author Federico Farinetto
+ */
 @Component
 @Aspect
 public class SignedAspect {
