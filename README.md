@@ -107,7 +107,7 @@ The library provides you an already instantiated RestTemplate bean that you can 
 
 ***All the http calls must be executed with this instance otherwise the library does not work.***
 
-**The name of the instance to inject is** ***restTemplate*** **as shown in the example above**
+**The name of the instance to inject is** ***restTemplate*** **as shown in the example above.**
 
 
 ### Server side implementation
