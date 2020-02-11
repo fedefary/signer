@@ -76,8 +76,9 @@ public class SignatureConfigManager {
             mac = Mac.getInstance(getAlgorithm());
         } catch (NoSuchAlgorithmException e) {
             if (isErrorEnabled) {
-                logger.error("Error occured during Mac creation");
+                logger.error("Error occured during Mac object creation");
             }
+            throw new IOException("Error occured during Mac object creation");
         }
 
         byte[] byteKey = getMyKey();
