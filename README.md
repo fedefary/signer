@@ -26,9 +26,7 @@ Every rest API annotated with *@Signed* annotation will be secured and will requ
 *In case of body's presence into the request, this content will be used for the signature's generation. Otherwise the signature will be calculated from a randomic generated seed that will be attached to the request as header.*
 
 The library uses the Java Mac class provided by the JDK to make the symmetric signature.
-See the official Oracle documentation linked below for more details.
-
-https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html
+See the official [Oracle](https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html) documentation for more details.
 
 
 ## Building and installation
@@ -113,7 +111,7 @@ The library provides you an already instantiated RestTemplate bean that you can 
 
 ***All the http calls must be executed with this instance otherwise the library does not work.***
 
-**The name of the instance to inject is** ***restTemplate*** **as shown in the example above.**
+The name of the instance to inject is ***restTemplate*** as shown in the example above.
 
 
 ### Server side implementation
@@ -161,9 +159,7 @@ If multiple generation's/verification's processes run at the same time on the sa
 
 The library uses ***SLF4J*** as logging facade system.
 
-Visit official documentation for more details:
-
-http://www.slf4j.org/docs.html
+See the official [SLF4J](http://www.slf4j.org/docs.html) documentation for more details.
 
 If you want to enable the library's logs you have to configure the logging level TRACE for the package ***com.ffsec***
 
@@ -174,3 +170,7 @@ This is an example with Log4j:
 ```
 log4j.logger.com.ffsec=TRACE
 ```
+
+## License
+
+This software is distributed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
