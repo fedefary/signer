@@ -148,7 +148,9 @@ public class DemoApplication {
 
 ## Multithreading
 
-The library can be considered thread safe, no concurrency issues found at the time of writing.
+The library is yet to bet tested for concurrency issues.
+
+Some considerations:
 
 Since the RestTemplate object does not change any of his state information to process HTTP it can be considered thread safe so the same instance can be shared among multiple processes.
 
