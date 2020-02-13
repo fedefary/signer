@@ -47,7 +47,7 @@ In order to use the library you have to import it on your pom.xml as shown below
 <dependency>
    <groupId>com.ffsec</groupId>
    <artifactId>signer</artifactId>
-   <version>1.0</version>
+   <version>1.0.0</version>
 </dependency>
 ```
 
