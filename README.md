@@ -175,4 +175,4 @@ log4j.logger.com.ffsec=TRACE
 
 ## License
 
-This software is distributed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
+This software is distributed under the [MIT License](https://opensource.org/licenses/MIT).
