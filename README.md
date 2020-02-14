@@ -53,7 +53,7 @@ In order to use the library you have to import it on your pom.xml as shown below
 
 ### Library properties
 
-Set the following properties into your *aplication.properties* or *application.yml*.
+Set the following properties into your *application.properties* or *application.yml*.
 
 Both the client and server must have the same secret key configured inside them since the signature algorithm use a symmetric key.
 On client side the secret key is used to generate the signature, on server side the same key is used for the signature's verification process.
@@ -64,7 +64,7 @@ The property to set is ***ffsec.signer.secret*** and must contains a randomic ge
 ffsec.signer.secret=NV8UJUL81Y9F
 ```
 
-***This property is mandatory, if you don't define it an Exception will be throwed at SpringBoot's startup.***
+***This property is mandatory, if you don't define it an Exception will be thrown at SpringBoot's startup.***
 
 It's also possible to define the hashing algorithm used for the signature generation, the default is *HmacSHA256* but also these algorithms are supported:
 
