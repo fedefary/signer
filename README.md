@@ -23,7 +23,7 @@ This annotation must be placed on the called controller's method and notify the 
 If the signature verification process completes succesfully, the http request will be handled by the server otherwise the client will receive a 401 UNAUTHORIZED response message.
 Every rest API annotated with *@Signed* annotation will be secured and will require a signed request. 
 
-*In case of body's presence into the request, this content will be used for the signature's generation. Otherwise the signature will be calculated from a randomic generated seed that will be attached to the request as header.*
+*In case of payload's presence into the request, this content will be used for the signature's generation. Otherwise the signature will be calculated from a randomic generated seed that will be attached to the request as header.*
 
 The library uses the Java Mac class provided by the JDK to make the symmetric signature.
 See the official [Oracle](https://docs.oracle.com/javase/7/docs/api/javax/crypto/Mac.html) documentation for more details.
@@ -148,7 +148,7 @@ public class DemoApplication {
 
 ## Multithreading
 
-The library is yet to bet tested for concurrency issues.
+The library is yet to be tested for concurrency issues.
 
 Some considerations:
 
